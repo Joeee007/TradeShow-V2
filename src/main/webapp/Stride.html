@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #3b4151;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #6b5fff;
+            --accent-gradient: linear-gradient(135deg, #6b5fff 0%, #8c7cff 100%);
+            --header-text: #ffffff;
+
+
+            --get-color: #2196f3;
+            --get-bg: rgba(33, 150, 243, 0.1);
+            --post-color: #4caf50;
+            --post-bg: rgba(76, 175, 80, 0.1);
+            --put-color: #ff9800;
+            --put-bg: rgba(255, 152, 0, 0.1);
+            --delete-color: #f44336;
+            --delete-bg: rgba(244, 67, 54, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --border-color: #404040;
+            --accent-color: #8c7cff;
+            --accent-gradient: linear-gradient(135deg, #8c7cff 0%, #a599ff 100%);
+            --header-text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--accent-gradient);
+            padding: 30px;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            color: var(--header-text);
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .schemes {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scheme-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+
+        .authorize-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transform: scale(1);
+            transition: transform 0.2s ease;
+        }
+
+        .authorize-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .endpoint {
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .endpoint:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .endpoint:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .method {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            background-color: var(--bg-primary);
+        }
+        .responseContainer{
+            height:auto;
+            margin-top:30px;
+            display:flex;
+            margin-left:10px;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+        .method:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .textContainer {
+            display: flex;
+            flex-direction: row;
+            height: auto;
+            width: 100%;
+        }
+
+        input {
+            width: 30%;
+            height: 30px;
+            padding: 20px;
+            margin-left: 20px;
+            font-size: 20px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            outline: none;
+        }
+        .responseTextSize{
+            font-size: 20px;
+            
+        }
+        .method-label {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            margin-right: 12px;
+        }
+
+        .get {
+            color: var(--get-color);
+            background-color: var(--get-bg);
+        }
+
+        .post {
+            color: var(--post-color);
+            background-color: var(--post-bg);
+        }
+
+        .put {
+            color: var(--put-color);
+            background-color: var(--put-bg);
+        }
+
+        .delete {
+            color: var(--delete-color);
+            background-color: var(--delete-bg);
+        }
+
+        .endpoint-content {
+            display: none;
+            padding: 20px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .endpoint-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .response-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: #263238;
+            color: #fff;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .response-box.active {
+            display: block;
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .method {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>STRIDE</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+
+    <div class="container">
+        <div class="schemes">
+            <select class="scheme-select">
+                <option>HTTPS</option>
+                <option>HTTP</option>
+            </select>
+            <button class="authorize-btn">
+                Authorize 🔒
+            </button>
+        </div>
+
+        <div class="section-title">
+            <div>
+                <span>sample</span>
+                <div class="section-subtitle">Sample data</div>
+            </div>
+        </div>
+
+        <div id="endpoints-container"></div>
+    </div>
+
+    <script>
+        var response = null;
+        var apis = null;
+        async function main() {
+            await fetchAPIList();
+        }
+
+        async function fetchAPIList() {
+            response = await fetch("/StrideApi/jsonCon");
+            console.log(response);
+            apis = await response.json();
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            await main();
+            console.log(apis);
+            initializeUI();
+        });
+        /*const apis = [
+           {
+               name: "Users API",
+               url: "/api/users",
+               methods: ["GET", "POST"],
+               description: "Add a new pet to the store"
+           },
+           {
+               name: "Products API",
+               url: "/api/products",
+               methods: ["GET", "POST", "PUT"],
+               description: "Update an existing pet"
+           },
+           {
+               name: "Orders API",
+               url: "/api/orders",
+               methods: ["GET", "DELETE"],
+               description: "Finds Pets by status"
+           }
+       ];*/
+
+
+        function createMethodElement(api, method, url, index) {
+            const methodDiv = document.createElement('div');
+            methodDiv.className = 'method';
+
+            const methodLabel = document.createElement('span');
+            methodLabel.className = `method-label ${method.toLowerCase()}`;
+            methodLabel.textContent = method;
+
+            const urlSpan = document.createElement('span');
+            urlSpan.className = 'endpoint-url';
+            urlSpan.textContent = url;
+
+            /*const descSpan = document.createElement('span');
+            descSpan.className = 'endpoint-description';
+            descSpan.textContent = description;*/
+
+            methodDiv.appendChild(methodLabel);
+            methodDiv.appendChild(urlSpan);
+            /*methodDiv.appendChild(descSpan);*/
+
+            const content = document.createElement('div');
+            content.className = 'endpoint-content';
+
+            const tryButton = document.createElement('button');
+            tryButton.className = 'try-out';
+            tryButton.textContent = 'Try it out';
+
+            const responseBox = document.createElement('pre');
+            responseBox.className = 'response-box';
+
+
+            content.appendChild(responseBox);
+
+            methodDiv.addEventListener('click', () => {
+                const allContents = document.querySelectorAll('.endpoint-content');
+                allContents.forEach(el => el.classList.remove('active'));
+                content.classList.add('active');
+                initializeRequest(api, method, index);
+                initializeResponse(api,method,index);
+                content.appendChild(tryButton);
+
+            });
+
+
+            tryButton.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                responseBox.classList.add('active');
+                responseBox.textContent = 'Loading...';
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    const response = {
+                        status: "success",
+                        method: method,
+                        url: url,
+                        timestamp: new Date().toISOString()
+                    };
+                    responseBox.textContent = JSON.stringify(response, null, 2);
+                } catch (error) {
+                    responseBox.textContent = "Error: " + error.message;
+                }
+            });
+
+            return [methodDiv, content];
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        function initializeUI() {
+            const container = document.getElementById('endpoints-container');
+            apis.forEach(api => {
+                const endpoint = document.createElement('div');
+                endpoint.className = 'endpoint';
+
+                api.methods.forEach((method, index) => {
+                    const [methodEl, contentEl] = createMethodElement(api, method, api.url, index);
+                    endpoint.appendChild(methodEl);
+                    endpoint.appendChild(contentEl);
+                });
+
+                container.appendChild(endpoint);
+            });
+        }
+        function initializeRequest(api, method, index) {
+            var curEndPointContent = document.querySelectorAll('.endpoint-content');
+            var lineBreak = document.createElement("br");
+            curEndPointContent.forEach((className) => {
+                if (className.classList.contains('active')) {
+                    className.innerHTML = "";
+                    for (let i = 0; i < api.requestDataType[index].length; i++) {
+                        if (api.requestDataType[index][i] != undefined) {
+                        	className.appendChild(lineBreak);
+                            var responseArea = document.createElement("div");
+                            var dataName = document.createElement("p");
+                            dataName.style.fontSize = "20px";
+                            dataName.innerText = api.requestDataName[index][i] + " : ";
+                            responseArea.className = "textContainer";
+                            var inputBox = document.createElement("input");
+                            inputBox.type = "text";
+                            inputBox.placeholder = api.requestDataType[index][i];
+                            inputBox.id = "parameter" + i;
+                            responseArea.appendChild(dataName);
+                            responseArea.appendChild(inputBox);
+                            className.appendChild(responseArea);
+                        }
+                    }
+
+
+                }
+
+            });
+        }
+
+        function initializeResponse(api, method, index) {
+            var curEndPointContent = document.querySelectorAll('.endpoint-content');
+            var responseArea = null;
+            console.log(api);
+
+            curEndPointContent.forEach((className) => {
+                if (className.classList.contains('active')) {
+                  for(var i=0;i<api.response[index].length;i++){
+                    var lineBreak = document.createElement("br");
+                    responseArea = document.createElement("div");
+                    responseArea.className="responseContainer";
+                    var responseCode = document.createElement("p");
+                    responseCode.className = "responseTextSize";
+                    responseCode.innerText = "Response Code : "+api.response[index][i].ResponseCode;
+                    var description = document.createElement("p");
+                    description.className = "responseTextSize";
+                    description.innerText = "Description : "+api.response[index][i].Description;
+                    var mediaType = document.createElement("p");
+                    mediaType.className = "responseTextSize";
+                    mediaType.innerText = "Media Type : "+api.response[index][i].MediaType;
+                    var schema = document.createElement("p");
+                    schema.className = "responseTextSize";
+                    schema.innerText = "Schema : "+api.response[index][i].Schema;
+                    var deprecated = document.createElement("p");
+                    deprecated.className = "responseTextSize";
+                    deprecated.innerText = "Deprecated : "+api.response[index][i].Deprecated;
+                    var headers = document.createElement("p");
+                    headers.className = "responseTextSize";
+                    headers.innerText = "Header : "+api.response[index][i].Headers;
+                    var examples = document.createElement("p");
+                    examples.className = "responseTextSize";
+                    examples.innerText = "Examples : "+api.response[index][i].Examples;
+                    if(api.response[index][i].ResponseCode!=undefined){
+                        responseArea.appendChild(responseCode);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].Description!=undefined){
+                        responseArea.appendChild(description);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].MediaType!=undefined){
+                        responseArea.appendChild(mediaType);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].Schema!=undefined){
+                        responseArea.appendChild(schema);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].Deprecated!=undefined){
+                        responseArea.appendChild(deprecated);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].Headers!=undefined){
+                        responseArea.appendChild(headers);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if(api.response[index][i].Examples!=undefined){
+                        responseArea.appendChild(examples);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    console.log(responseArea);
+                    
+                    className.appendChild(responseArea);
+                }}
+            });
+
+        }
+
+
+    </script>
+</body>
+
+</html>
