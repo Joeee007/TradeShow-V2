@@ -17,8 +17,12 @@ import org.reflections.scanners.Scanners;
 public class ServletScanner {
 	ConfigLoader loader=new ConfigLoader();
 	
-    List<List<String>> typeList = new ArrayList<>();
-    List<List<String>> nameList = new ArrayList<>();
+    List<List<String>> paramTypeList = new ArrayList<>();
+    List<List<String>> paramNameList = new ArrayList<>();
+    List<List<String>> bodyTypeList=new ArrayList<>();
+    List<List<String>> bodyNameList=new ArrayList<>();
+    List<List<String>> headerTypeList=new ArrayList<>();
+    List<List<String>> headerNameList=new ArrayList<>();
     List<List<JSONObject>> responseList=new ArrayList<>();
     
         
@@ -30,8 +34,12 @@ public class ServletScanner {
             Set<Class<?>> servlets = reflections.getTypesAnnotatedWith(WebServlet.class);
             
             for (Class<?> servlet : servlets) {
-            	typeList.clear();
-            	nameList.clear();
+            	bodyNameList.clear();
+            	bodyTypeList.clear();
+            	headerNameList.clear();
+            	headerTypeList.clear();
+            	paramTypeList.clear();
+            	paramNameList.clear();
             	responseList.clear();
                 WebServlet annotation = servlet.getAnnotation(WebServlet.class);
                 if (annotation != null) {
@@ -43,8 +51,12 @@ public class ServletScanner {
                     // Clear lists before processing
 
                        
-                    endpoint.put("requestDataName", nameList);
-                    endpoint.put("requestDataType", typeList);
+                    endpoint.put("requestDataName", paramNameList);
+                    endpoint.put("requestDataType", paramTypeList);
+                    endpoint.put("requestBodyName", bodyNameList);
+                    endpoint.put("requestBodyType", bodyTypeList);
+                    endpoint.put("requestHeaderName", headerNameList);
+                    endpoint.put("requestHeaderType", headerTypeList);
                     endpoint.put("response", responseList);
     
                     endpoints.put(endpoint);
@@ -74,9 +86,11 @@ public class ServletScanner {
                 }
                 if (method.isAnnotationPresent(ApiAction.class)) {
                     ApiAction apiAction = method.getAnnotation(ApiAction.class);
-                    methods.add(apiAction.actionName());
+                    methods.add(apiAction.actionName()+".sub");
                 }
                 getParams(method);
+                getBody(method);
+                getHeader(method);
                 getResponseParam(method);
             }
             return methods;
@@ -104,9 +118,33 @@ public class ServletScanner {
                 else{
                     System.out.println(" not supported");
             }
-                nameList.add(subNameList);
-                typeList.add(subTypeList);
+                paramNameList.add(subNameList);
+                paramTypeList.add(subTypeList);
         
+    }
+    public void getBody(Method method) {
+    	ArrayList<String> bodysubNameList=new ArrayList<>();
+	    ArrayList<String> bodysubTypeList=new ArrayList<>();
+	    if (method.isAnnotationPresent(ApiBody.class)) {
+            ApiBody apiBody = method.getAnnotation(ApiBody.class);
+            System.out.println("Key: " + apiBody.name() + ", Value: " + apiBody.type());
+            bodysubNameList.add(apiBody.name());
+            bodysubTypeList.add(apiBody.type());
+        }
+	    bodyNameList.add(bodysubNameList);
+        bodyTypeList.add(bodysubTypeList);
+    }
+    public void getHeader(Method method) {
+    	ArrayList<String> headersubNameList=new ArrayList<>();
+	    ArrayList<String> headersubTypeList=new ArrayList<>();
+	    if (method.isAnnotationPresent(ApiHeader.class)) {
+            ApiHeader apiHeader = method.getAnnotation(ApiHeader.class);
+            System.out.println("Key: " + apiHeader.name() + ", Value: " + apiHeader.type());
+            headersubNameList.add(apiHeader.name());
+            headersubTypeList.add(apiHeader.type());
+        }
+	    headerNameList.add(headersubNameList);
+        headerTypeList.add(headersubTypeList);
     }
         
         public void getResponseParam(Method method) {
@@ -161,6 +199,7 @@ public class ServletScanner {
    	                }
    	            
    	        } catch (Exception e) {
+   	        	
    	        }
    	        responseList.add(subResponseList);
    	        

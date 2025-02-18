@@ -12,17 +12,17 @@ import utils.*;
 @WebServlet("/myServlet")
 public class MyServlet extends HttpServlet {
 
-    @ApiAction(actionName = "get")
+    @ApiAction(actionName = "GET")
     protected void handleAction1(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("This is Action 1");
     }
 
-    @ApiAction(actionName = "get")
+    @ApiAction(actionName = "GET")
     @ApiParamGroup(
             value = {
-                @ApiParam(name = "Super", type = "String"),@ApiParam(name = "ladio", type = "int"),
+                @ApiParam(name = "name", type = "String"),
             }
     )
     @ResponseParam(responseCode = "200", description = "Successful Response", mediaType = "application/json")
@@ -38,19 +38,19 @@ public class MyServlet extends HttpServlet {
             @ApiParam(name = "action", type = "String"),@ApiParam(name = "bankai", type = "int"),
         }
     )
-    @ResponseParams(
-    		value={
-        @ResponseParam(responseCode = "200", description = "Successful Response", mediaType = "application/json"),
-        @ResponseParam(responseCode = "400", description = "Bad Request", mediaType = "application/json"),
-        @ResponseParam(responseCode = "500", description = "Internal Server Error", mediaType = "application/json")
-    })
-//    @ResponseParam(
-//            responseCode = "200",
-//            description = "Successful response",
-//            mediaType = "application/json",
-//            headers = {"Content-Type: application/json"},
-//            examples = {"{\"message\": \"Success\"}"}
-//        )
+//    @ResponseParams(
+//    		value={
+//        @ResponseParam(responseCode = "200", description = "Successful Response", mediaType = "application/json"),
+//        @ResponseParam(responseCode = "400", description = "Bad Request", mediaType = "application/json"),
+//        @ResponseParam(responseCode = "500", description = "Internal Server Error", mediaType = "application/json")
+//    })
+    @ResponseParam(
+            responseCode = "200",
+            description = "Successful response",
+            mediaType = "application/json",
+            headers = {"Content-Type: application/json"},
+            examples = {"{\"message\": \"Success\"}"}
+        )
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
 

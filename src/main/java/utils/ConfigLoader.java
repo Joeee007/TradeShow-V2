@@ -22,8 +22,12 @@ public class ConfigLoader {
         return properties.getProperty("package.name");
     }
     
+    public static String getProjectName() {
+        return properties.getProperty("project.name");
+    }
     
     public static void main(String[] args) {
     	System.out.println(ConfigLoader.getPackageName());
+        System.out.println(ConfigLoader.getProjectName());
     }
 }

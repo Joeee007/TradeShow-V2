@@ -148,14 +148,16 @@
             cursor: pointer;
             background-color: var(--bg-primary);
         }
-        .responseContainer{
-            height:auto;
-            margin-top:30px;
-            display:flex;
-            margin-left:10px;
-            flex-direction:column;
-            justify-content:space-between;
+
+        .responseContainer {
+            height: auto;
+            margin-top: 30px;
+            display: flex;
+            margin-left: 10px;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
         .method:hover {
             background-color: var(--bg-secondary);
         }
@@ -177,10 +179,12 @@
             border-radius: 5px;
             outline: none;
         }
-        .responseTextSize{
+
+        .responseTextSize {
             font-size: 20px;
-            
+
         }
+
         .method-label {
             padding: 4px 8px;
             border-radius: 3px;
@@ -308,7 +312,7 @@
         }
 
         async function fetchAPIList() {
-            response = await fetch("/StrideApi/jsonCon");
+            response = await fetch("jsonCon");
             console.log(response);
             apis = await response.json();
         }
@@ -344,7 +348,12 @@
             methodDiv.className = 'method';
 
             const methodLabel = document.createElement('span');
+            if (method.includes(".")) {
+                method = method.split(".")
+                method = method[0];
+            }
             methodLabel.className = `method-label ${method.toLowerCase()}`;
+
             methodLabel.textContent = method;
 
             const urlSpan = document.createElement('span');
@@ -364,7 +373,7 @@
 
             const tryButton = document.createElement('button');
             tryButton.className = 'try-out';
-            tryButton.textContent = 'Try it out';
+            tryButton.textContent = 'Test';
 
             const responseBox = document.createElement('pre');
             responseBox.className = 'response-box';
@@ -377,30 +386,14 @@
                 allContents.forEach(el => el.classList.remove('active'));
                 content.classList.add('active');
                 initializeRequest(api, method, index);
-                initializeResponse(api,method,index);
                 content.appendChild(tryButton);
+                initializeResponse(api, method, index);
+
 
             });
 
 
-            tryButton.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                responseBox.classList.add('active');
-                responseBox.textContent = 'Loading...';
-
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    const response = {
-                        status: "success",
-                        method: method,
-                        url: url,
-                        timestamp: new Date().toISOString()
-                    };
-                    responseBox.textContent = JSON.stringify(response, null, 2);
-                } catch (error) {
-                    responseBox.textContent = "Error: " + error.message;
-                }
-            });
+            tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
 
             return [methodDiv, content];
         }
@@ -432,9 +425,13 @@
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
                     className.innerHTML = "";
+                 if(api.requestDataType[index].length > 0) {
+                    var paramHeading = document.createElement("p");
+                    paramHeading.innerText = "REQUEST PARAMETER";
+                    className.appendChild(paramHeading);
                     for (let i = 0; i < api.requestDataType[index].length; i++) {
                         if (api.requestDataType[index][i] != undefined) {
-                        	className.appendChild(lineBreak);
+                            className.appendChild(lineBreak);
                             var responseArea = document.createElement("div");
                             var dataName = document.createElement("p");
                             dataName.style.fontSize = "20px";
@@ -449,6 +446,51 @@
                             className.appendChild(responseArea);
                         }
                     }
+                }
+                if(api.requestBodyType[index].length > 0) {
+                    var paramHeadingBody = document.createElement("p");
+                    paramHeadingBody.innerText = "REQUEST BODY";
+                    className.appendChild(paramHeadingBody);
+                    for (let i = 0; i < api.requestBodyType[index].length; i++) {
+                        if (api.requestBodyType[index][i] != undefined) {
+                            className.appendChild(lineBreak);
+                            var responseArea = document.createElement("div");
+                            var dataName = document.createElement("p");
+                            dataName.style.fontSize = "20px";
+                            dataName.innerText = api.requestBodyName[index][i] + " : ";
+                            responseArea.className = "textContainer";
+                            var inputBox = document.createElement("input");
+                            inputBox.type = "text";
+                            inputBox.placeholder = api.requestBodyType[index][i];
+                            inputBox.id = "parameter" + i;
+                            responseArea.appendChild(dataName);
+                            responseArea.appendChild(inputBox);
+                            className.appendChild(responseArea);
+                        }
+                    }
+                }
+                if(api.requestHeaderType[index].length > 0) {
+                    var paramHeadingHeader = document.createElement("p");
+                    paramHeadingHeader.innerText = "REQUEST HEADER";
+                    className.appendChild(paramHeadingHeader);
+                    for (let i = 0; i < api.requestHeaderType[index].length; i++) {
+                        if (api.requestHeaderType[index][i] != undefined) {
+                            className.appendChild(lineBreak);
+                            var responseArea = document.createElement("div");
+                            var dataName = document.createElement("p");
+                            dataName.style.fontSize = "20px";
+                            dataName.innerText = api.requestHeaderName[index][i] + " : ";
+                            responseArea.className = "textContainer";
+                            var inputBox = document.createElement("input");
+                            inputBox.type = "text";
+                            inputBox.placeholder = api.requestHeaderType[index][i];
+                            inputBox.id = "parameter" + i;
+                            responseArea.appendChild(dataName);
+                            responseArea.appendChild(inputBox);
+                            className.appendChild(responseArea);
+                        }
+                    }
+                }
 
 
                 }
@@ -457,74 +499,278 @@
         }
 
         function initializeResponse(api, method, index) {
+        	console.log(index);
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var responseArea = null;
             console.log(api);
 
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
-                  for(var i=0;i<api.response[index].length;i++){
-                    var lineBreak = document.createElement("br");
-                    responseArea = document.createElement("div");
-                    responseArea.className="responseContainer";
-                    var responseCode = document.createElement("p");
-                    responseCode.className = "responseTextSize";
-                    responseCode.innerText = "Response Code : "+api.response[index][i].ResponseCode;
-                    var description = document.createElement("p");
-                    description.className = "responseTextSize";
-                    description.innerText = "Description : "+api.response[index][i].Description;
-                    var mediaType = document.createElement("p");
-                    mediaType.className = "responseTextSize";
-                    mediaType.innerText = "Media Type : "+api.response[index][i].MediaType;
-                    var schema = document.createElement("p");
-                    schema.className = "responseTextSize";
-                    schema.innerText = "Schema : "+api.response[index][i].Schema;
-                    var deprecated = document.createElement("p");
-                    deprecated.className = "responseTextSize";
-                    deprecated.innerText = "Deprecated : "+api.response[index][i].Deprecated;
-                    var headers = document.createElement("p");
-                    headers.className = "responseTextSize";
-                    headers.innerText = "Header : "+api.response[index][i].Headers;
-                    var examples = document.createElement("p");
-                    examples.className = "responseTextSize";
-                    examples.innerText = "Examples : "+api.response[index][i].Examples;
-                    if(api.response[index][i].ResponseCode!=undefined){
-                        responseArea.appendChild(responseCode);
-                        responseArea.appendChild(lineBreak);
+                    for (var i = 0; i < api.response[index].length; i++) {
+                        var lineBreak = document.createElement("br");
+                        responseArea = document.createElement("div");
+                        responseArea.className = "responseContainer";
+                        var responseCode = document.createElement("p");
+                        responseCode.className = "responseTextSize";
+                        responseCode.innerText = "Response Code : " + api.response[index][i].ResponseCode;
+                        var description = document.createElement("p");
+                        description.className = "responseTextSize";
+                        description.innerText = "Description : " + api.response[index][i].Description;
+                        var mediaType = document.createElement("p");
+                        mediaType.className = "responseTextSize";
+                        mediaType.innerText = "Media Type : " + api.response[index][i].MediaType;
+                        var schema = document.createElement("p");
+                        schema.className = "responseTextSize";
+                        schema.innerText = "Schema : " + api.response[index][i].Schema;
+                        var deprecated = document.createElement("p");
+                        deprecated.className = "responseTextSize";
+                        deprecated.innerText = "Deprecated : " + api.response[index][i].Deprecated;
+                        var headers = document.createElement("p");
+                        headers.className = "responseTextSize";
+                        headers.innerText = "Header : " + api.response[index][i].Headers;
+                        var examples = document.createElement("p");
+                        examples.className = "responseTextSize";
+                        examples.innerText = "Examples : " + api.response[index][i].Examples;
+                        if (api.response[index][i].ResponseCode != undefined) {
+                            responseArea.appendChild(responseCode);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].Description != undefined) {
+                            responseArea.appendChild(description);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].MediaType != undefined) {
+                            responseArea.appendChild(mediaType);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].Schema != undefined) {
+                            responseArea.appendChild(schema);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].Deprecated != undefined) {
+                            responseArea.appendChild(deprecated);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].Headers != undefined) {
+                            responseArea.appendChild(headers);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        if (api.response[index][i].Examples != undefined) {
+                            responseArea.appendChild(examples);
+                            responseArea.appendChild(lineBreak);
+                        }
+                        console.log(responseArea);
+
+                        className.appendChild(responseArea);
                     }
-                    if(api.response[index][i].Description!=undefined){
-                        responseArea.appendChild(description);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    if(api.response[index][i].MediaType!=undefined){
-                        responseArea.appendChild(mediaType);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    if(api.response[index][i].Schema!=undefined){
-                        responseArea.appendChild(schema);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    if(api.response[index][i].Deprecated!=undefined){
-                        responseArea.appendChild(deprecated);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    if(api.response[index][i].Headers!=undefined){
-                        responseArea.appendChild(headers);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    if(api.response[index][i].Examples!=undefined){
-                        responseArea.appendChild(examples);
-                        responseArea.appendChild(lineBreak);
-                    }
-                    console.log(responseArea);
-                    
-                    className.appendChild(responseArea);
-                }}
+                }
             });
 
         }
 
+        function isValidJson(jsonString) {
+            try {
+                JSON.parse(jsonString);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        async function fetchAnswer(div, button, api, method, index) {
+            var paramArray = [];
+            var responseObject = {};
+            for (var i = 0; i < api.requestDataName[index].length; i++) {
+                var curVariable = document.getElementById("parameter" + i);
+                console.log(curVariable);
+                if (isValidJson(curVariable.value)) {
+                    paramArray[i] = JSON.parse(curVariable.value);
+                    paramArray[i] = JSON.stringify(paramArray[i]);
+                }
+                else {
+                    paramArray[i] = curVariable.value
+                }
+                console.log(paramArray[0]);
+                curVariable.value = "";
+            }
+            console.log(paramArray);
+            var endPoint = "";
+            var params = "";
+            for (var i = 0; i < api.url.length; i++) {
+                if (api.url[i].includes("/") == false) {
+                    endPoint += api.url[i];
+                }
+            }
+            // if (api.url.includes(".sub")) {
+            if (method == "GET") {
+                try {
+                    let params = paramArray
+                        .map((value, i) => `${api.requestDataName[index][i]}=${encodeURIComponent(value)}`)
+                        .join("&");
 
+                    let url = `${endPoint}?${params}`;
+                    console.log("Fetching URL:", url);
+
+                    const response = await fetch(url);
+                    console.log("Response received:", response);
+
+                    const contentType = response.headers.get("content-type");
+                    let data;
+
+                    if (contentType && contentType.includes("application/json")) {
+                        try {
+                            data = await response.json(); // Try parsing JSON
+                            console.log("Valid JSON:", data);
+                        } catch (error) {
+                            console.error("JSON Parsing Error:", error);
+                            data = "error"; // Set data to "error" if parsing fails
+                        }
+                    } else {
+                        try {
+                            data = await response.text(); // Read as plain text
+                            console.warn("Received non-JSON response:", data);
+                        } catch (error) {
+                            console.error("Text Parsing Error:", error);
+                            data = "error"; // Set data to "error" if text reading fails
+                        }
+                    }
+
+                    let responseObject = {
+                        Deprecated: false,
+                        Description: "Successfully fetched",
+                        Examples: JSON.stringify(data, null, 2),
+                        Headers: ['Content-Type: application/json'],
+                        method: method,
+                        ResponseCode: "200",
+                        check: "response Check"
+                    };
+
+                    api.response[index] = [responseObject]; // Store final response
+                    console.log("API Response:", api.response[index]);
+
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            }
+
+
+            else if (method == "POST") {
+                try {
+                    const response = await fetch(endPoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: paramArray[0]
+                    });
+
+                    console.log("Response received:", response);
+
+                    const contentType = response.headers.get("content-type");
+                    let data;
+
+                    if (contentType && contentType.includes("application/json")) {
+                        try {
+                            data = await response.json(); 
+                            console.log("Valid JSON:", data);
+                        } catch (error) {
+                            console.error("JSON Parsing Error:", error);
+                            data = "error"; 
+                        }
+                    } else {
+                        try {
+                            data = await response.text(); 
+                            console.warn("Received non-JSON response:", data);
+                        } catch (error) {
+                            console.error("Text Parsing Error:", error);
+                            data = "error"; 
+                        }
+                    }
+
+                    let responseObject = {
+                        Deprecated: false,
+                        Description: "Successfully fetched",
+                        Examples: JSON.stringify(data, null, 2),
+                        Headers: ['Content-Type: application/x-www-form-urlencoded'],
+                        method: method,  
+                        ResponseCode: "200"
+                    };
+
+                    api.response[index] = [responseObject];
+                    console.log("POST Response:", api.response[index]);
+
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            }
+            else if(method =="PUT"){}
+            else if(method =="DELETE"){}
+
+
+            // }
+            updateResponse(api.response[index][0], method, index);
+        }
+
+        function updateResponse(api, method, index) {
+            var responseArea = document.querySelectorAll(".responseContainer");
+            for (var i = 0; i < responseArea.length; i++) {
+                responseArea[i].innerHTML = "";
+            }
+            var responseBox = document.querySelector(".active");
+            var lineBreak = document.createElement("br");
+            responseArea = document.createElement("div");
+            responseArea.className = "responseContainer";
+            var responseCode = document.createElement("p");
+            responseCode.className = "responseTextSize";
+            responseCode.innerText = "Response Code : " + api.ResponseCode;
+            var description = document.createElement("p");
+            description.className = "responseTextSize";
+            description.innerText = "Description : " + api.Description;
+            var mediaType = document.createElement("p");
+            mediaType.className = "responseTextSize";
+            mediaType.innerText = "Media Type : " + api.MediaType;
+            var schema = document.createElement("p");
+            schema.className = "responseTextSize";
+            schema.innerText = "Schema : " + api.Schema;
+            var deprecated = document.createElement("p");
+            deprecated.className = "responseTextSize";
+            deprecated.innerText = "Deprecated : " + api.Deprecated;
+            var headers = document.createElement("p");
+            headers.className = "responseTextSize";
+            headers.innerText = "Header : " + api.Headers;
+            var examples = document.createElement("p");
+            examples.className = "responseTextSize";
+            examples.innerText = "Examples : " + api.Examples;
+            if (api.ResponseCode != undefined) {
+                responseArea.appendChild(responseCode);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.Description != undefined) {
+                responseArea.appendChild(description);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.MediaType != undefined) {
+                responseArea.appendChild(mediaType);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.Schema != undefined) {
+                responseArea.appendChild(schema);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.Deprecated != undefined) {
+                responseArea.appendChild(deprecated);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.Headers != undefined) {
+                responseArea.appendChild(headers);
+                responseArea.appendChild(lineBreak);
+            }
+            if (api.Examples != undefined) {
+                responseArea.appendChild(examples);
+                responseArea.appendChild(lineBreak);
+            }
+            responseBox.appendChild(responseArea);
+
+        }
     </script>
 </body>
 

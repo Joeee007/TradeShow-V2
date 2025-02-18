@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApiParam {
-    String name();
+public @interface ApiHeader {
+	String name();
     String type();
 }
