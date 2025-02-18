@@ -420,77 +420,81 @@
             });
         }
         function initializeRequest(api, method, index) {
+            var idValue=0;
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var lineBreak = document.createElement("br");
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
                     className.innerHTML = "";
-                 if(api.requestDataType[index].length > 0) {
-                    var paramHeading = document.createElement("p");
-                    paramHeading.innerText = "REQUEST PARAMETER";
-                    className.appendChild(paramHeading);
-                    for (let i = 0; i < api.requestDataType[index].length; i++) {
-                        if (api.requestDataType[index][i] != undefined) {
-                            className.appendChild(lineBreak);
-                            var responseArea = document.createElement("div");
-                            var dataName = document.createElement("p");
-                            dataName.style.fontSize = "20px";
-                            dataName.innerText = api.requestDataName[index][i] + " : ";
-                            responseArea.className = "textContainer";
-                            var inputBox = document.createElement("input");
-                            inputBox.type = "text";
-                            inputBox.placeholder = api.requestDataType[index][i];
-                            inputBox.id = "parameter" + i;
-                            responseArea.appendChild(dataName);
-                            responseArea.appendChild(inputBox);
-                            className.appendChild(responseArea);
+                    if (api.requestDataType[index].length > 0) {
+                        var paramHeading = document.createElement("p");
+                        paramHeading.innerText = "REQUEST PARAMETER";
+                        className.appendChild(paramHeading);
+                        for (let i = 0; i < api.requestDataType[index].length; i++) {
+                            if (api.requestDataType[index][i] != undefined) {
+                                className.appendChild(lineBreak);
+                                var responseArea = document.createElement("div");
+                                var dataName = document.createElement("p");
+                                dataName.style.fontSize = "20px";
+                                dataName.innerText = api.requestDataName[index][i] + " : ";
+                                responseArea.className = "textContainer";
+                                var inputBox = document.createElement("input");
+                                inputBox.type = "text";
+                                inputBox.placeholder = api.requestDataType[index][i];
+                                inputBox.id = "parameter" + idValue;
+                                idValue++;
+                                responseArea.appendChild(dataName);
+                                responseArea.appendChild(inputBox);
+                                className.appendChild(responseArea);
+                            }
                         }
                     }
-                }
-                if(api.requestBodyType[index].length > 0) {
-                    var paramHeadingBody = document.createElement("p");
-                    paramHeadingBody.innerText = "REQUEST BODY";
-                    className.appendChild(paramHeadingBody);
-                    for (let i = 0; i < api.requestBodyType[index].length; i++) {
-                        if (api.requestBodyType[index][i] != undefined) {
-                            className.appendChild(lineBreak);
-                            var responseArea = document.createElement("div");
-                            var dataName = document.createElement("p");
-                            dataName.style.fontSize = "20px";
-                            dataName.innerText = api.requestBodyName[index][i] + " : ";
-                            responseArea.className = "textContainer";
-                            var inputBox = document.createElement("input");
-                            inputBox.type = "text";
-                            inputBox.placeholder = api.requestBodyType[index][i];
-                            inputBox.id = "parameter" + i;
-                            responseArea.appendChild(dataName);
-                            responseArea.appendChild(inputBox);
-                            className.appendChild(responseArea);
+                    if (api.requestBodyType[index].length > 0) {
+                        var paramHeadingBody = document.createElement("p");
+                        paramHeadingBody.innerText = "REQUEST BODY";
+                        className.appendChild(paramHeadingBody);
+                        for (let i = 0; i < api.requestBodyType[index].length; i++) {
+                            if (api.requestBodyType[index][i] != undefined) {
+                                className.appendChild(lineBreak);
+                                var responseArea = document.createElement("div");
+                                var dataName = document.createElement("p");
+                                dataName.style.fontSize = "20px";
+                                dataName.innerText = api.requestBodyName[index][i] + " : ";
+                                responseArea.className = "textContainer";
+                                var inputBox = document.createElement("input");
+                                inputBox.type = "text";
+                                inputBox.placeholder = api.requestBodyType[index][i];
+                                inputBox.id = "parameter" + idValue;
+                                idValue++;
+                                responseArea.appendChild(dataName);
+                                responseArea.appendChild(inputBox);
+                                className.appendChild(responseArea);
+                            }
                         }
                     }
-                }
-                if(api.requestHeaderType[index].length > 0) {
-                    var paramHeadingHeader = document.createElement("p");
-                    paramHeadingHeader.innerText = "REQUEST HEADER";
-                    className.appendChild(paramHeadingHeader);
-                    for (let i = 0; i < api.requestHeaderType[index].length; i++) {
-                        if (api.requestHeaderType[index][i] != undefined) {
-                            className.appendChild(lineBreak);
-                            var responseArea = document.createElement("div");
-                            var dataName = document.createElement("p");
-                            dataName.style.fontSize = "20px";
-                            dataName.innerText = api.requestHeaderName[index][i] + " : ";
-                            responseArea.className = "textContainer";
-                            var inputBox = document.createElement("input");
-                            inputBox.type = "text";
-                            inputBox.placeholder = api.requestHeaderType[index][i];
-                            inputBox.id = "parameter" + i;
-                            responseArea.appendChild(dataName);
-                            responseArea.appendChild(inputBox);
-                            className.appendChild(responseArea);
+                    if (api.requestHeaderType[index].length > 0) {
+                        var paramHeadingHeader = document.createElement("p");
+                        paramHeadingHeader.innerText = "REQUEST HEADER";
+                        className.appendChild(paramHeadingHeader);
+                        for (let i = 0; i < api.requestHeaderType[index].length; i++) {
+                            if (api.requestHeaderType[index][i] != undefined) {
+                                className.appendChild(lineBreak);
+                                var responseArea = document.createElement("div");
+                                var dataName = document.createElement("p");
+                                dataName.style.fontSize = "20px";
+                                dataName.innerText = api.requestHeaderName[index][i] + " : ";
+                                responseArea.className = "textContainer";
+                                var inputBox = document.createElement("input");
+                                inputBox.type = "text";
+                                inputBox.placeholder = api.requestHeaderType[index][i];
+                                inputBox.id = "parameter" + idValue;
+                                idValue++;
+                                responseArea.appendChild(dataName);
+                                responseArea.appendChild(inputBox);
+                                className.appendChild(responseArea);
+                            }
                         }
                     }
-                }
 
 
                 }
@@ -499,7 +503,7 @@
         }
 
         function initializeResponse(api, method, index) {
-        	console.log(index);
+            console.log(index);
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var responseArea = null;
             console.log(api);
@@ -576,144 +580,151 @@
                 return false;
             }
         }
-        async function fetchAnswer(div, button, api, method, index) {
-            var paramArray = [];
-            var responseObject = {};
-            for (var i = 0; i < api.requestDataName[index].length; i++) {
-                var curVariable = document.getElementById("parameter" + i);
-                console.log(curVariable);
-                if (isValidJson(curVariable.value)) {
-                    paramArray[i] = JSON.parse(curVariable.value);
-                    paramArray[i] = JSON.stringify(paramArray[i]);
+
+        function getRequestHeaders(api, index, headerParam) {
+            const headers = {};
+            if(api.requestHeaderName[index].length>0){
+            for (var i = 0; i < api.requestHeaderName[index].length; i++) {
+                const headerKey = api.requestHeaderName[index][i];
+                const headerValue = headerParam[i];
+                if (headerKey && headerValue) {
+                    headers[headerKey] = headerValue;
                 }
-                else {
-                    paramArray[i] = curVariable.value
-                }
-                console.log(paramArray[0]);
-                curVariable.value = "";
+            }}
+            return headers;
+        }
+
+        function getRequestBody(api, index,method,bodyValue) {
+            if (["POST", "PUT", "GET", "DELETE"].includes(method)) {
+                const requestBody = bodyValue
+                return requestBody;
             }
-            console.log(paramArray);
+            return null;
+        }
+
+        function getRequestParam(api, index, urlParam) {
             var endPoint = "";
-            var params = "";
-            for (var i = 0; i < api.url.length; i++) {
-                if (api.url[i].includes("/") == false) {
-                    endPoint += api.url[i];
+            if(api.requestDataName[index].length>0){
+            for (var i = 0; i < api.requestDataName[index].length; i++) {
+                const urlParamName = api.requestDataName[index][i];
+                const urlParamValue = urlParam[i];
+                if (urlParamName && urlParamValue && i != api.requestDataName.length - 1) {
+                    endPoint += urlParamName + "=" + urlParamValue + "&";
                 }
-            }
-            // if (api.url.includes(".sub")) {
-            if (method == "GET") {
-                try {
-                    let params = paramArray
-                        .map((value, i) => `${api.requestDataName[index][i]}=${encodeURIComponent(value)}`)
-                        .join("&");
+                else if (urlParamName && urlParamValue) {
+                    endPoint += urlParamName + "=" + urlParamValue
+                }
+            }}
+            return endPoint;
+        }
 
-                    let url = `${endPoint}?${params}`;
-                    console.log("Fetching URL:", url);
+        async function fetchAnswer(div, button, api, method, index) {
+            try {
+                var inputParamArray=[];
+                var bodyValue ="";
+                var headerParam=[];
+                var urlParam=[];
+                var totalLength = api.requestBodyName[index].length+api.requestDataName[index].length+api.requestHeaderName[index].length;
+                for(var i=0;i<totalLength;i++){
+                   var paramId=document.getElementById("parameter"+i);
+                   inputParamArray[i]=paramId.value;
+                   paramId.value="";
+                }
+                for(var i=0;i<api.requestDataName[index].length;i++){
+                    urlParam[i]=inputParamArray.shift();
+                }
+                bodyValue=inputParamArray.shift();
+                headerParam=inputParamArray;
+                const method = api.methods[index];
+                let options = { method: method, headers: getRequestHeaders(api,index,headerParam)};
 
-                    const response = await fetch(url);
-                    console.log("Response received:", response);
+               
 
-                    const contentType = response.headers.get("content-type");
-                    let data;
-
-                    if (contentType && contentType.includes("application/json")) {
-                        try {
-                            data = await response.json(); // Try parsing JSON
-                            console.log("Valid JSON:", data);
-                        } catch (error) {
-                            console.error("JSON Parsing Error:", error);
-                            data = "error"; // Set data to "error" if parsing fails
-                        }
-                    } else {
-                        try {
-                            data = await response.text(); // Read as plain text
-                            console.warn("Received non-JSON response:", data);
-                        } catch (error) {
-                            console.error("Text Parsing Error:", error);
-                            data = "error"; // Set data to "error" if text reading fails
-                        }
+                // Add request body if method is POST, PUT, PATCH, or DELETE
+                if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+                    const requestBody = getRequestBody(api,index,method,bodyValue);
+                    if (requestBody) {
+                        options.headers["Content-Type"] = "application/json";
+                        options.body = requestBody;
                     }
+                }
 
-                    let responseObject = {
+                // Add request parameters if provided
+                var fullUrl="";
+                const requestParams = getRequestParam(api, index, urlParam);
+                if (requestParams) {
+                    const queryString = requestParams
+                    fullUrl = queryString;
+                }
+                let response="";
+                try{
+                    response = await fetch(fullUrl, options);
+                    var cType=response.contentType;
+                    if(cType.includes("html/*")){
+                        let responseObject = {
+                        		Deprecated: false,
+                        	    Description: "Failed To Fetch",
+                        	    Examples: error.message, 
+                        	    method: method,
+                        	    ResponseCode: "Network Error", // ✅ No response object, so use a generic message
+                        	    check: "response Check"
+                         };
+                         api.response[index] = [responseObject];
+                         updateResponse(api.response[index][0],method,index)
+                         return;
+                    }
+                    console.log("bankai");
+                }
+                catch(error){
+                   let responseObject = {
+                		   Deprecated: false,
+                		    Description: "Failed To Fetch",
+                		    Examples: error.message, // ✅ error.message provides the actual error reason
+                		    method: method,
+                		    ResponseCode: "Network Error", // ✅ No response object, so use a generic message
+                		    check: "response Check"
+                    };
+                    api.response[index] = [responseObject];
+                    console.log(api);
+                    updateResponse(api.response[index][0],method,index)
+                    return;
+                }
+                const contentType = response.headers.get("content-type");
+
+                let result = `Status: ${response.status} ${response.statusText}\n\n`;
+
+                if (contentType && contentType.includes("application/json")) {
+                    const jsonResult = await response.json();
+                    result += JSON.stringify(jsonResult, null, 2);
+                } else {
+                    result += await response.text();
+                }
+                
+                let responseObject = {
                         Deprecated: false,
                         Description: "Successfully fetched",
-                        Examples: JSON.stringify(data, null, 2),
+                        Examples: JSON.stringify(result),
                         Headers: ['Content-Type: application/json'],
                         method: method,
                         ResponseCode: "200",
                         check: "response Check"
                     };
-
-                    api.response[index] = [responseObject]; // Store final response
-                    console.log("API Response:", api.response[index]);
-
-                } catch (error) {
-                    console.error("Fetch error:", error);
-                }
-            }
-
-
-            else if (method == "POST") {
-                try {
-                    const response = await fetch(endPoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: paramArray[0]
-                    });
-
-                    console.log("Response received:", response);
-
-                    const contentType = response.headers.get("content-type");
-                    let data;
-
-                    if (contentType && contentType.includes("application/json")) {
-                        try {
-                            data = await response.json(); 
-                            console.log("Valid JSON:", data);
-                        } catch (error) {
-                            console.error("JSON Parsing Error:", error);
-                            data = "error"; 
-                        }
-                    } else {
-                        try {
-                            data = await response.text(); 
-                            console.warn("Received non-JSON response:", data);
-                        } catch (error) {
-                            console.error("Text Parsing Error:", error);
-                            data = "error"; 
-                        }
-                    }
-
-                    let responseObject = {
-                        Deprecated: false,
-                        Description: "Successfully fetched",
-                        Examples: JSON.stringify(data, null, 2),
-                        Headers: ['Content-Type: application/x-www-form-urlencoded'],
-                        method: method,  
-                        ResponseCode: "200"
-                    };
-
                     api.response[index] = [responseObject];
-                    console.log("POST Response:", api.response[index]);
-
-                } catch (error) {
-                    console.error("Fetch error:", error);
-                }
+                updateResponse(api.response[index][0],method,index)
+            } catch (error) {
+            	console.log(error);
             }
-            else if(method =="PUT"){}
-            else if(method =="DELETE"){}
-
-
-            // }
-            updateResponse(api.response[index][0], method, index);
+            finally{
+            	console.log(response);
+            }
         }
 
         function updateResponse(api, method, index) {
+        	
             var responseArea = document.querySelectorAll(".responseContainer");
             for (var i = 0; i < responseArea.length; i++) {
                 responseArea[i].innerHTML = "";
+                console.log("Naruto");
             }
             var responseBox = document.querySelector(".active");
             var lineBreak = document.createElement("br");

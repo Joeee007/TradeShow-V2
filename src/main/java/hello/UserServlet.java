@@ -26,11 +26,7 @@ public class UserServlet extends HttpServlet {
     
     
     
-    @ApiParamGroup(
-            value = {
-            		@ApiParam(name = "header", type = "string"),@ApiParam(name = "recived", type = "JSON") ,
-            }
-        )
+    
     @ApiBody(name="body",type="JSON")
     @ResponseParam(
             responseCode = "200",
@@ -38,7 +34,7 @@ public class UserServlet extends HttpServlet {
             mediaType = "application/json",
             headers = {"Content-Type: application/json"},
             examples = {"{\"message\": \"Success\"}"}
-        )
+     )
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
     	response.setContentType("application/json");
