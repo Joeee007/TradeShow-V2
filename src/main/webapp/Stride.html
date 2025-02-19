@@ -3,7 +3,17 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material.css">
+    
+
     <style>
+        .CodeMirror {
+            width: 100%;
+            height: 100%;
+            min-height: 100px;
+        }
+
         :root {
 
             --bg-primary: #ffffff;
@@ -121,6 +131,14 @@
 
         .authorize-btn:hover {
             transform: scale(1.05);
+        }
+
+        .editor-container {
+            width: 80%;
+            /* height: 400px; */
+            /* border: 1px solid #ddd; */
+            padding: 10px;
+            margin-bottom: 20px;
         }
 
         .endpoint {
@@ -303,10 +321,15 @@
 
         <div id="endpoints-container"></div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
 
     <script>
+    
         var response = null;
         var apis = null;
+        let editor;
+        let editorsss;
         async function main() {
             await fetchAPIList();
         }
@@ -420,7 +443,7 @@
             });
         }
         function initializeRequest(api, method, index) {
-            var idValue=0;
+            var idValue = 0;
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var lineBreak = document.createElement("br");
             curEndPointContent.forEach((className) => {
@@ -453,28 +476,50 @@
                         var paramHeadingBody = document.createElement("p");
                         paramHeadingBody.innerText = "REQUEST BODY";
                         className.appendChild(paramHeadingBody);
+
                         for (let i = 0; i < api.requestBodyType[index].length; i++) {
-                            if (api.requestBodyType[index][i] != undefined) {
+                            if (api.requestBodyType[index][i] !== undefined) {
                                 className.appendChild(lineBreak);
+
+                                // Create the container for the response area
                                 var responseArea = document.createElement("div");
+                                responseArea.className = "textContainer";
+
+                                // Create and style the parameter label
                                 var dataName = document.createElement("p");
                                 dataName.style.fontSize = "20px";
                                 dataName.innerText = api.requestBodyName[index][i] + " : ";
-                                responseArea.className = "textContainer";
-                                var inputBox = document.createElement("input");
-                                inputBox.type = "text";
-                                inputBox.placeholder = api.requestBodyType[index][i];
-                                inputBox.id = "parameter" + idValue;
-                                idValue++;
                                 responseArea.appendChild(dataName);
-                                responseArea.appendChild(inputBox);
+
+                                // Create the container for CodeMirror
+                                var container = document.createElement("div");
+                                container.className = "editor-container";
+
+                                // Create the textarea and assign it a unique id
+                                var inputBox = document.createElement("textarea");
+                                let uniqueId = "api-editor-" + idValue
+                                inputBox.className = "parameter" + idValue;
+                                inputBox.id = uniqueId;
+                                inputBox.placeholder = api.requestBodyType[index][i];
+                                container.appendChild(inputBox);
+
+                                // Append the container to the response area
+                                responseArea.appendChild(container);
                                 className.appendChild(responseArea);
+
+                                // Initialize CodeMirror on the unique textarea
+                                editor = CodeMirror.fromTextArea(document.getElementById(uniqueId), {
+                                    mode: "application/json",   
+                                    lineNumbers: true,          
+                                    theme: "material",          
+                                    tabSize: 2,                 
+                                    indentWithTabs: true,       
+                                    autoCloseBrackets: true     
+                                });
+                                idValue++;
                             }
                         }
                     }
-                    
-
-
                 }
 
             });
@@ -561,18 +606,19 @@
 
         function getRequestHeaders(api, index, headerParam) {
             const headers = {};
-            if(api.requestHeaderName[index].length>0){
-            for (var i = 0; i < api.requestHeaderName[index].length; i++) {
-                const headerKey = api.requestHeaderName[index][i];
-                const headerValue = headerParam[i];
-                if (headerKey && headerValue) {
-                    headers[headerKey] = headerValue;
+            if (api.requestHeaderName[index].length > 0) {
+                for (var i = 0; i < api.requestHeaderName[index].length; i++) {
+                    const headerKey = api.requestHeaderName[index][i];
+                    const headerValue = headerParam[i];
+                    if (headerKey && headerValue) {
+                        headers[headerKey] = headerValue;
+                    }
                 }
-            }}
+            }
             return headers;
         }
 
-        function getRequestBody(api, index,method,bodyValue) {
+        function getRequestBody(api, index, method, bodyValue) {
             if (["POST", "PUT", "GET", "DELETE"].includes(method)) {
                 const requestBody = bodyValue
                 return requestBody;
@@ -582,98 +628,99 @@
 
         function getRequestParam(api, index, urlParam) {
             var endPoint = "";
-            if(api.requestDataName[index].length>0){
-            for (var i = 0; i < api.requestDataName[index].length; i++) {
-                const urlParamName = api.requestDataName[index][i];
-                const urlParamValue = urlParam[i];
-                if (urlParamName && urlParamValue && i != api.requestDataName[index].length - 1) {
-                    endPoint += urlParamName + "=" + urlParamValue + "&";
+            if (api.requestDataName[index].length > 0) {
+                for (var i = 0; i < api.requestDataName[index].length; i++) {
+                    const urlParamName = api.requestDataName[index][i];
+                    const urlParamValue = urlParam[i];
+                    if (urlParamName && urlParamValue && i != api.requestDataName[index].length - 1) {
+                        endPoint += urlParamName + "=" + urlParamValue + "&";
+                    }
+                    else if (urlParamName && urlParamValue) {
+                        endPoint += urlParamName + "=" + urlParamValue
+                    }
                 }
-                else if (urlParamName && urlParamValue) {
-                    endPoint += urlParamName + "=" + urlParamValue
-                }
-            }}
+            }
             console.log(endPoint);
             return endPoint;
         }
-         
-        function removeSlash(string){
-        	var newString="";
-        	for(var i=0;i<string.length;i++){
-        		if(string[i]!="/"){
-        			newString+=string[i];
-        		}
-        	}
-        	return newString;
+
+        function removeSlash(string) {
+            var newString = "";
+            for (var i = 0; i < string.length; i++) {
+                if (string[i] != "/") {
+                    newString += string[i];
+                }
+            }
+            return newString;
         }
         async function fetchAnswer(div, button, api, method, index) {
             try {
-                var inputParamArray=[];
-                var bodyValue ="";
-                var urlParam=[];
-                var totalLength = api.requestBodyName[index].length+api.requestDataName[index].length;
-                for(var i=0;i<totalLength;i++){
-                   var paramId=document.getElementById("parameter"+i);
-                   inputParamArray[i]=paramId.value;
-                   paramId.value="";
+                var inputParamArray = [];
+                var bodyValue = "";
+                var urlParam = [];
+                var totalLength = api.requestBodyName[index].length + api.requestDataName[index].length;
+                for (var i = 0; i < totalLength; i++) {
+                    var paramId = document.querySelector(".parameter" + i);
+                    inputParamArray[i] = editor.getValue();
+                    paramId.value = "";
                 }
                 console.log(inputParamArray);
-                for(var i=0;i<api.requestDataName[index].length;i++){
-                    urlParam[i]=inputParamArray.shift();
+                for (var i = 0; i < api.requestDataName[index].length; i++) {
+                    urlParam[i] = inputParamArray.shift();
                 }
-                bodyValue=inputParamArray.shift();
+                bodyValue = inputParamArray.shift();
                 var method = api.methods[index];
-                if(method.includes(".")){
-                	method=method.split(".");
-                	method=method[0];
+                if (method.includes(".")) {
+                    method = method.split(".");
+                    method = method[0];
                 }
-                let options = { method: method,headers:{}};
+                let options = { method: method, headers: {} };
 
-               
+
 
                 // Add request body if method is POST, PUT, PATCH, or DELETE
                 if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-                    const requestBody = getRequestBody(api,index,method,bodyValue);
+                    const requestBody = getRequestBody(api, index, method, bodyValue);
                     if (requestBody) {
-                    	for(var i=0;i<api.requestHeaderType[index].length;i++){
-                    		console.log(api.requestHeaderType[index][i]);
-                    		options.headers[api.requestHeaderName[index][i]]= api.requestHeaderType[index][i];
-                    	}
+                        for (var i = 0; i < api.requestHeaderType[index].length; i++) {
+                            console.log(api.requestHeaderType[index][i]);
+                            options.headers[api.requestHeaderName[index][i]] = api.requestHeaderType[index][i];
+                        }
                         options.body = requestBody;
                         console.log(requestBody);
                     }
                 }
 
                 // Add request parameters if provided
-                var fullUrl="";
+                var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
                 if (requestParams) {
-                	fullUrl=removeSlash(api.url);
+                    fullUrl = removeSlash(api.url);
                     const queryString = requestParams
-                    fullUrl +="?"+queryString;
+                    fullUrl += "?" + queryString;
                 }
-                else{
-                	fullUrl=removeSlash(api.url);
+                else {
+                    fullUrl = removeSlash(api.url);
                 }
-                console.log("bankai",fullUrl);
-                let response="";
-                try{
+                console.log("bankai", fullUrl);
+                let response = "";
+                try {
                     response = await fetch(fullUrl, options);
                     console.log("bankai");
                 }
-                catch(error){
-                	console.log(error);
-                   let responseObject = {
-                		   Deprecated: false,
-                		    Description: "Failed To Fetch",
-                		    Examples: error.message, // ✅ error.message provides the actual error reason
-                		    method: method,
-                		    ResponseCode: "Network Error", // ✅ No response object, so use a generic message
-                		    check: "response Check"
+                catch (error) {
+                    console.log(error);
+                    let responseObject = {
+                        Deprecated: false,
+                        Description: "Failed To Fetch",
+                        Examples: error.message,
+                        method: method,
+                        ResponseCode: "Network Error",
+                        check: "response Check"
                     };
                     api.response[index] = [responseObject];
                     console.log(api);
-                    updateResponse(api.response[index][0],method,index)
+                    updateResponse(api.response[index][0], method, index)
                     return;
                 }
                 const contentType = response.headers.get("content-type");
@@ -688,26 +735,26 @@
                 }
                 console.log(result);
                 let responseObject = {
-                        Deprecated: false,
-                        Description: "Successfully fetched",
-                        Examples: result,
-                        Headers: ['Content-Type: application/json'],
-                        method: method,
-                        ResponseCode: "200",
-                        check: "response Check"
-                    };
-                    api.response[index] = [responseObject];
-                updateResponse(api.response[index][0],method,index)
+                    Deprecated: false,
+                    Description: "Successfully fetched",
+                    Examples: result,
+                    Headers: ['Content-Type: application/json'],
+                    method: method,
+                    ResponseCode: "200",
+                    check: "response Check"
+                };
+                api.response[index] = [responseObject];
+                updateResponse(api.response[index][0], method, index)
             } catch (error) {
-            	console.log(error);
+                console.log(error);
             }
-            finally{
-            	console.log(response);
-            } 
+            finally {
+                console.log(response);
+            }
         }
 
         function updateResponse(api, method, index) {
-        	
+
             var responseArea = document.querySelectorAll(".responseContainer");
             for (var i = 0; i < responseArea.length; i++) {
                 responseArea[i].innerHTML = "";
@@ -738,6 +785,19 @@
             var examples = document.createElement("p");
             examples.className = "responseTextSize";
             examples.innerText = "Examples : " + api.Examples;
+
+            let container = document.createElement("div");
+            container.className = "editor-container";
+
+            let testArea = document.createElement("textarea");
+            testArea.id = "api-editor";
+            container.appendChild(testArea);
+            editorsss = CodeMirror.fromTextArea(testArea, {
+                lineNumbers: true,
+                mode: "application/json",
+                theme: "material",
+            });
+
             if (api.ResponseCode != undefined) {
                 responseArea.appendChild(responseCode);
                 responseArea.appendChild(lineBreak);
@@ -763,12 +823,15 @@
                 responseArea.appendChild(lineBreak);
             }
             if (api.Examples != undefined) {
-                responseArea.appendChild(examples);
-                responseArea.appendChild(lineBreak);
+                //responseArea.appendChild(examples);
+                //console.log("example: " + examples);
+                //responseArea.appendChild(lineBreak);
+                responseArea.appendChild(container);
+                editorsss.setValue(api.Examples);
             }
             responseBox.appendChild(responseArea);
-
         }
+        
     </script>
 </body>
 
