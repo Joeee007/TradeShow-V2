@@ -472,29 +472,7 @@
                             }
                         }
                     }
-                    if (api.requestHeaderType[index].length > 0) {
-                        var paramHeadingHeader = document.createElement("p");
-                        paramHeadingHeader.innerText = "REQUEST HEADER";
-                        className.appendChild(paramHeadingHeader);
-                        for (let i = 0; i < api.requestHeaderType[index].length; i++) {
-                            if (api.requestHeaderType[index][i] != undefined) {
-                                className.appendChild(lineBreak);
-                                var responseArea = document.createElement("div");
-                                var dataName = document.createElement("p");
-                                dataName.style.fontSize = "20px";
-                                dataName.innerText = api.requestHeaderName[index][i] + " : ";
-                                responseArea.className = "textContainer";
-                                var inputBox = document.createElement("input");
-                                inputBox.type = "text";
-                                inputBox.placeholder = api.requestHeaderType[index][i];
-                                inputBox.id = "parameter" + idValue;
-                                idValue++;
-                                responseArea.appendChild(dataName);
-                                responseArea.appendChild(inputBox);
-                                className.appendChild(responseArea);
-                            }
-                        }
-                    }
+                    
 
 
                 }
@@ -617,26 +595,34 @@
             }}
             return endPoint;
         }
-
+         
+        function removeSlash(string){
+        	var newString="";
+        	for(var i=0;i<string.length;i++){
+        		if(string[i]!="/"){
+        			newString+=string[i];
+        		}
+        	}
+        	return newString;
+        }
         async function fetchAnswer(div, button, api, method, index) {
             try {
                 var inputParamArray=[];
                 var bodyValue ="";
-                var headerParam=[];
                 var urlParam=[];
-                var totalLength = api.requestBodyName[index].length+api.requestDataName[index].length+api.requestHeaderName[index].length;
+                var totalLength = api.requestBodyName[index].length+api.requestDataName[index].length;
                 for(var i=0;i<totalLength;i++){
                    var paramId=document.getElementById("parameter"+i);
                    inputParamArray[i]=paramId.value;
                    paramId.value="";
                 }
+                console.log(inputParamArray);
                 for(var i=0;i<api.requestDataName[index].length;i++){
                     urlParam[i]=inputParamArray.shift();
                 }
                 bodyValue=inputParamArray.shift();
-                headerParam=inputParamArray;
                 const method = api.methods[index];
-                let options = { method: method, headers: getRequestHeaders(api,index,headerParam)};
+                let options = { method: method,headers:{}};
 
                
 
@@ -644,8 +630,12 @@
                 if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
                     const requestBody = getRequestBody(api,index,method,bodyValue);
                     if (requestBody) {
-                        options.headers["Content-Type"] = "application/json";
+                    	for(var i=0;i<api.requestHeaderType[index].length;i++){
+                    		console.log(api.requestHeaderType[index][i]);
+                    		options.headers[api.requestHeaderName[index][i]]= api.requestHeaderType[index][i];
+                    	}
                         options.body = requestBody;
+                        console.log(requestBody);
                     }
                 }
 
@@ -656,26 +646,17 @@
                     const queryString = requestParams
                     fullUrl = queryString;
                 }
+                if(fullUrl==""){
+                	fullUrl=removeSlash(api.url);
+                }
+                console.log("bankai",fullUrl);
                 let response="";
                 try{
                     response = await fetch(fullUrl, options);
-                    var cType=response.contentType;
-                    if(cType.includes("html/*")){
-                        let responseObject = {
-                        		Deprecated: false,
-                        	    Description: "Failed To Fetch",
-                        	    Examples: error.message, 
-                        	    method: method,
-                        	    ResponseCode: "Network Error", // ✅ No response object, so use a generic message
-                        	    check: "response Check"
-                         };
-                         api.response[index] = [responseObject];
-                         updateResponse(api.response[index][0],method,index)
-                         return;
-                    }
                     console.log("bankai");
                 }
                 catch(error){
+                	console.log(error);
                    let responseObject = {
                 		   Deprecated: false,
                 		    Description: "Failed To Fetch",
@@ -716,7 +697,7 @@
             }
             finally{
             	console.log(response);
-            }
+            } 
         }
 
         function updateResponse(api, method, index) {

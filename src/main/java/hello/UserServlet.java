@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utils.ApiBody;
+import utils.ApiHeader;
 import utils.ApiParam;
 import utils.ApiParamGroup;
 import utils.ResponseParam;
@@ -28,6 +29,7 @@ public class UserServlet extends HttpServlet {
     
     
     @ApiBody(name="body",type="JSON")
+    @ApiHeader(name="Content-Type",type="application/json")
     @ResponseParam(
             responseCode = "200",
             description = "Successful response",
@@ -52,7 +54,6 @@ public class UserServlet extends HttpServlet {
         }
 
         // Build JSON response
-        String jsonResponse = "{ \"received\": " + jsonBody.toString() + ", \"header\": \"" + customHeader + "\" }";
-        response.getWriter().write(jsonResponse);
+        response.getWriter().write(jsonBody.toString());
     }
 }
