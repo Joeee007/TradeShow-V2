@@ -586,13 +586,14 @@
             for (var i = 0; i < api.requestDataName[index].length; i++) {
                 const urlParamName = api.requestDataName[index][i];
                 const urlParamValue = urlParam[i];
-                if (urlParamName && urlParamValue && i != api.requestDataName.length - 1) {
+                if (urlParamName && urlParamValue && i != api.requestDataName[index].length - 1) {
                     endPoint += urlParamName + "=" + urlParamValue + "&";
                 }
                 else if (urlParamName && urlParamValue) {
                     endPoint += urlParamName + "=" + urlParamValue
                 }
             }}
+            console.log(endPoint);
             return endPoint;
         }
          
@@ -621,7 +622,11 @@
                     urlParam[i]=inputParamArray.shift();
                 }
                 bodyValue=inputParamArray.shift();
-                const method = api.methods[index];
+                var method = api.methods[index];
+                if(method.includes(".")){
+                	method=method.split(".");
+                	method=method[0];
+                }
                 let options = { method: method,headers:{}};
 
                
@@ -643,10 +648,11 @@
                 var fullUrl="";
                 const requestParams = getRequestParam(api, index, urlParam);
                 if (requestParams) {
+                	fullUrl=removeSlash(api.url);
                     const queryString = requestParams
-                    fullUrl = queryString;
+                    fullUrl +="?"+queryString;
                 }
-                if(fullUrl==""){
+                else{
                 	fullUrl=removeSlash(api.url);
                 }
                 console.log("bankai",fullUrl);
@@ -680,11 +686,11 @@
                 } else {
                     result += await response.text();
                 }
-                
+                console.log(result);
                 let responseObject = {
                         Deprecated: false,
                         Description: "Successfully fetched",
-                        Examples: JSON.stringify(result),
+                        Examples: result,
                         Headers: ['Content-Type: application/json'],
                         method: method,
                         ResponseCode: "200",
