@@ -441,6 +441,7 @@
         function initializeRequest(api, method, index) {
             var idValue = 0;
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
+            curEndPointContent.forEach((className)=>className.innerHTML="");
             var lineBreak = document.createElement("br");
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
@@ -652,9 +653,18 @@
                 var urlParam = [];
                 var totalLength = api.requestBodyName[index].length + api.requestDataName[index].length;
                 for (var i = 0; i < totalLength; i++) {
-                    var paramId = document.querySelector(".parameter" + i);
+                    var paramId= document.querySelector(".parameter" + i);
+                    var paramIdText="";
+                    if(paramId==null){
+                    	paramIdText=document.getElementById("parameter"+i);
+                    }
+                    if(paramId!=null){
                     inputParamArray[i] = editor.getValue();
-                    paramId.value = "";
+                    }
+                    else{
+                    	inputParamArray[i]=paramIdText.value;
+                    }
+                    paramIdText.value = "";
                 }
                 console.log(inputParamArray);
                 for (var i = 0; i < api.requestDataName[index].length; i++) {
@@ -686,6 +696,7 @@
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
+                console.log("req",requestParams);
                 if (requestParams) {
                     fullUrl = removeSlash(api.url);
                     const queryString = requestParams
@@ -694,11 +705,11 @@
                 else {
                     fullUrl = removeSlash(api.url);
                 }
-                console.log("bankai", fullUrl);
+                console.log("URL", fullUrl);
                 let response = "";
+                let parser = new DOMParser();
                 try {
                     response = await fetch(fullUrl, options);
-                    console.log("bankai");
                 }
                 catch (error) {
                     console.log(error);
@@ -711,7 +722,6 @@
                         check: "response Check"
                     };
                     api.response[index] = [responseObject];
-                    console.log(api);
                     updateResponse(api.response[index][0], method, index)
                     return;
                 }
@@ -725,7 +735,40 @@
                 } else {
                     result += await response.text();
                 }
-                console.log(result);
+                if(result.includes("<!doctype html>")){
+                	let doc = parser.parseFromString(result, "text/html");
+                    result = doc.querySelector("pre").innerText 
+                    if(result.includes("<!doctype html>")){
+                    	result = doc.querySelector("p").innerText 
+                    }
+                    else{
+                    	var newResult="";
+                    	for(var i=0;i<result.length;i++){
+                    		if(result[i]=="["){
+                    			break;
+                    		}
+                    		else{
+                    			newResult+=result[i];
+                    		}
+                    	}
+                    	result=newResult;
+                    }
+                }
+                var newResult=result;
+                let status=result.split("\n")[0].split(":");
+                console.log("Status",status);
+                result = result.split("\n").slice(1).join("\n").trim();
+                if(isValidJson(result)){
+                	result=JSON.parse(result)
+                	var newJson={};
+                	newJson[status[0]]=status[1];
+                	result={...newJson, ...result};
+                	result=JSON.stringify(result,null,2);
+                }
+                else{
+                	result=newResult;
+                }
+                console.log("bankai",result);
                 let responseObject = {
                     Deprecated: false,
                     Description: "Successfully fetched",
@@ -739,6 +782,18 @@
                 updateResponse(api.response[index][0], method, index)
             } catch (error) {
                 console.log(error);
+                let responseObject = {
+                        Deprecated: false,
+                        Description: "Failed To Fetch",
+                        Examples: error.message,
+                        method: method,
+                        ResponseCode: "Network Error",
+                        check: "response Check"
+                    };
+                    api.response[index] = [responseObject];
+                    console.log(api);
+                    updateResponse(api.response[index][0], method, index)
+                    return;
             }
             finally {
                 console.log(response);
@@ -830,6 +885,7 @@
             editorsss.setTheme("ace/theme/monokai"); 
             editorsss.session.setMode("ace/mode/json");
             editorsss.setFontSize(16); // Optional: Set font size
+            editorsss.setReadOnly(true);
             editorsss.setValue(api.Examples, 1); 
         }
 
