@@ -285,6 +285,7 @@
                 gap: 8px;
             }
         }
+
         /* .parameter0{
             height: 100px;
             width: 100%;
@@ -441,7 +442,7 @@
         function initializeRequest(api, method, index) {
             var idValue = 0;
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
-            curEndPointContent.forEach((className)=>className.innerHTML="");
+            curEndPointContent.forEach((className) => className.innerHTML = "");
             var lineBreak = document.createElement("br");
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
@@ -550,7 +551,12 @@
                         headers.innerText = "Header : " + api.response[index][i].Headers;
                         var examples = document.createElement("p");
                         examples.className = "responseTextSize";
-                        examples.innerText = "Examples : " + api.response[index][i].Examples;
+                        let container = document.createElement("div");
+                        container.className = "editor-container";
+                        container.id = "api-editor"; // Ensure the ID is correctly set
+                        container.style.width = "100%";
+                        container.style.height = "200px";
+                        examples.innerText = "Output : ";
                         if (api.response[index][i].ResponseCode != undefined) {
                             responseArea.appendChild(responseCode);
                             responseArea.appendChild(lineBreak);
@@ -577,11 +583,21 @@
                         }
                         if (api.response[index][i].Examples != undefined) {
                             responseArea.appendChild(examples);
-                            responseArea.appendChild(lineBreak);
+                            responseArea.appendChild(container);
                         }
                         console.log(responseArea);
 
                         className.appendChild(responseArea);
+
+                        // Initialize Ace Editor after appending
+                        editorsss = ace.edit("api-editor");
+                        editorsss.setTheme("ace/theme/monokai");
+                        editorsss.session.setMode("ace/mode/json");
+                        editorsss.setFontSize(16); // Optional: Set font size
+                        editorsss.setReadOnly(true);
+                        console.log(api.response[index][i].Examples);
+                        editorsss.setValue(JSON.stringify(JSON.parse(api.response[index][i].Examples),null,2));
+
                     }
                 }
             });
@@ -653,16 +669,16 @@
                 var urlParam = [];
                 var totalLength = api.requestBodyName[index].length + api.requestDataName[index].length;
                 for (var i = 0; i < totalLength; i++) {
-                    var paramId= document.querySelector(".parameter" + i);
-                    var paramIdText="";
-                    if(paramId==null){
-                    	paramIdText=document.getElementById("parameter"+i);
+                    var paramId = document.querySelector(".parameter" + i);
+                    var paramIdText = "";
+                    if (paramId == null) {
+                        paramIdText = document.getElementById("parameter" + i);
                     }
-                    if(paramId!=null){
-                    inputParamArray[i] = editor.getValue();
+                    if (paramId != null) {
+                        inputParamArray[i] = editor.getValue();
                     }
-                    else{
-                    	inputParamArray[i]=paramIdText.value;
+                    else {
+                        inputParamArray[i] = paramIdText.value;
                     }
                     paramIdText.value = "";
                 }
@@ -696,7 +712,7 @@
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
-                console.log("req",requestParams);
+                console.log("req", requestParams);
                 if (requestParams) {
                     fullUrl = removeSlash(api.url);
                     const queryString = requestParams
@@ -735,40 +751,40 @@
                 } else {
                     result += await response.text();
                 }
-                if(result.includes("<!doctype html>")){
-                	let doc = parser.parseFromString(result, "text/html");
-                    result = doc.querySelector("pre").innerText 
-                    if(result.includes("<!doctype html>")){
-                    	result = doc.querySelector("p").innerText 
+                if (result.includes("<!doctype html>")) {
+                    let doc = parser.parseFromString(result, "text/html");
+                    result = doc.querySelector("pre").innerText
+                    if (result.includes("<!doctype html>")) {
+                        result = doc.querySelector("p").innerText
                     }
-                    else{
-                    	var newResult="";
-                    	for(var i=0;i<result.length;i++){
-                    		if(result[i]=="["){
-                    			break;
-                    		}
-                    		else{
-                    			newResult+=result[i];
-                    		}
-                    	}
-                    	result=newResult;
+                    else {
+                        var newResult = "";
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i] == "[") {
+                                break;
+                            }
+                            else {
+                                newResult += result[i];
+                            }
+                        }
+                        result = newResult;
                     }
                 }
-                var newResult=result;
-                let status=result.split("\n")[0].split(":");
-                console.log("Status",status);
+                var newResult = result;
+                let status = result.split("\n")[0].split(":");
+                console.log("Status", status);
                 result = result.split("\n").slice(1).join("\n").trim();
-                if(isValidJson(result)){
-                	result=JSON.parse(result)
-                	var newJson={};
-                	newJson[status[0]]=status[1];
-                	result={...newJson, ...result};
-                	result=JSON.stringify(result,null,2);
+                if (isValidJson(result)) {
+                    result = JSON.parse(result)
+                    var newJson = {};
+                    newJson[status[0]] = status[1];
+                    result = { ...newJson, ...result };
+                    result = JSON.stringify(result, null, 2);
                 }
-                else{
-                	result=newResult;
+                else {
+                    result = newResult;
                 }
-                console.log("bankai",result);
+                console.log("bankai", result);
                 let responseObject = {
                     Deprecated: false,
                     Description: "Successfully fetched",
@@ -783,17 +799,17 @@
             } catch (error) {
                 console.log(error);
                 let responseObject = {
-                        Deprecated: false,
-                        Description: "Failed To Fetch",
-                        Examples: error.message,
-                        method: method,
-                        ResponseCode: "Network Error",
-                        check: "response Check"
-                    };
-                    api.response[index] = [responseObject];
-                    console.log(api);
-                    updateResponse(api.response[index][0], method, index)
-                    return;
+                    Deprecated: false,
+                    Description: "Failed To Fetch",
+                    Examples: error.message,
+                    method: method,
+                    ResponseCode: "Network Error",
+                    check: "response Check"
+                };
+                api.response[index] = [responseObject];
+                console.log(api);
+                updateResponse(api.response[index][0], method, index)
+                return;
             }
             finally {
                 console.log(response);
@@ -838,7 +854,7 @@
             headers.innerText = "Header : " + api.Headers;
 
             // Create a container for Ace Editor
-           // let container = document.createElement("div");
+            // let container = document.createElement("div");
             //container.className = "editor-container";
             //container.id = "api-editors"; // Assign an ID for Ace initialization
             //container.style.width = "100%";
@@ -864,6 +880,7 @@
                 responseArea.appendChild(deprecated);
                 responseArea.appendChild(lineBreak);
             }
+            
             if (api.Headers != undefined) {
                 responseArea.appendChild(headers);
                 responseArea.appendChild(lineBreak);
@@ -879,14 +896,14 @@
             }
 
             responseBox.appendChild(responseArea);
-        	
+
             // Initialize Ace Editor after appending
             editorsss = ace.edit("api-editor");
-            editorsss.setTheme("ace/theme/monokai"); 
+            editorsss.setTheme("ace/theme/monokai");
             editorsss.session.setMode("ace/mode/json");
             editorsss.setFontSize(16); // Optional: Set font size
             editorsss.setReadOnly(true);
-            editorsss.setValue(api.Examples, 1); 
+            editorsss.setValue(api.Examples, 1);
         }
 
 
