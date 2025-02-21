@@ -1272,7 +1272,7 @@
                 method = method.split(".");
                 method = method[0];
             }
-            let options = { method: method, headers: {} };
+            let options = { method: method, headers: {"Content-Type":"application/json"} };
 
 
 
@@ -1281,15 +1281,13 @@
                 const requestBody = getRequestBody(api, index, method, bodyValue);
                 if (requestBody) {
                     for (var i = 0; i < api.requestHeaderType[index].length; i++) {
-                        console.log(api.requestHeaderType[index][i]);
                         options.headers[api.requestHeaderName[index][i]] = api.requestHeaderType[index][i];
                     }
                     options.body = requestBody;
                     
-                    options.headers = applyAuthToRequest(options.headers);
-                    console.log(options.headers);
-                    console.log(requestBody);
-                    console.log("fetched Answer");
+                    const dataOfAuth = applyAuthToRequest(options.headers);
+                    options.headers=dataOfAuth.headers;
+                    console.log("Option",options);
                 }
             }
 

@@ -16,7 +16,6 @@ import org.reflections.scanners.Scanners;
 
 
 public class ServletScanner {
-	ConfigLoader loader=new ConfigLoader();
 	
     List<List<String>> paramTypeList = new ArrayList<>();
     List<List<String>> paramNameList = new ArrayList<>();
@@ -32,7 +31,7 @@ public class ServletScanner {
             JSONArray endpoints = new JSONArray();
     
             // Scan the entire root package
-            Reflections reflections = new Reflections(loader.getPackageName(), Scanners.TypesAnnotated);
+            Reflections reflections = new Reflections(ConfigLoader.getPackageName(), Scanners.TypesAnnotated);
             Set<Class<?>> servlets = reflections.getTypesAnnotatedWith(WebServlet.class);
             
             for (Class<?> servlet : servlets) {
@@ -216,7 +215,7 @@ public class ServletScanner {
     	ArrayList<String> fieldList=new ArrayList<>();
     	Class<?> clazz=null;
 		try {
-			clazz = Class.forName(loader.getPackageName()+"."+className);
+			clazz = Class.forName(ConfigLoader.getPackageName()+"."+className);
 			Field[] fields = clazz.getDeclaredFields();
 
 	        for (Field field : fields) {
