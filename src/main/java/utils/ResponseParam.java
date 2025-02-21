@@ -20,7 +20,7 @@ public @interface ResponseParam {
 
     String[] headers() default {};  // Possible headers returned (e.g., "Content-Type: application/json")
 
-    String[] examples() default {};  // Example JSON response
+    String[] examples() default {"{\"Example\": \"message\"}"};  // Example JSON response
 
 }
 

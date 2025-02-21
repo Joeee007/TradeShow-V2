@@ -605,8 +605,18 @@
                         editorsss.setFontSize(16); // Optional: Set font size
                         editorsss.setReadOnly(true);
                         console.log(api.response[index][i].Examples);
-                        var parsedJSON=JSON.parse(api.response[index][i].Examples);
-                        editorsss.setValue(JSON.stringify(parsedJSON,null,2));
+                        var parsedJSON=""
+                        try{
+                        	parsedJSON=JSON.parse(api.response[index][i].Examples);
+                        	editorsss.setValue(JSON.stringify(parsedJSON,null,2));
+                        }
+                        catch(e){
+                            editorsss.session.setMode("ace/mode/plain_text");
+                            editorsss.setTheme("ace/theme/textmate");
+                        	editorsss.setValue(api.response[index][i].Examples);
+                        }
+                        
+                        
 
                     }
                 }
