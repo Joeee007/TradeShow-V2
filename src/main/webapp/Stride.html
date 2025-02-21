@@ -1,18 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material.css">
     <style>
-        .CodeMirror {
-            width: 100%;
-            height: 100%;
-            min-height: 40px;
-            border-radius: 6px;
-        }
-
         :root {
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -30,7 +20,16 @@
             --put-bg: rgba(255, 152, 0, 0.1);
             --delete-color: #f44336;
             --delete-bg: rgba(244, 67, 54, 0.1);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --modal-overlay: rgba(0, 0, 0, 0.5);
         }
+         .CodeMirror {
+            width: 100%;
+            height: 100%;
+            min-height: 40px;
+            border-radius: 6px;
+        }
+        
 
         [data-theme="dark"] {
             --bg-primary: #1a1a1a;
@@ -41,16 +40,18 @@
             --accent-color: #8c7cff;
             --accent-gradient: linear-gradient(135deg, #8c7cff 0%, #a599ff 100%);
             --header-text: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --modal-overlay: rgba(0, 0, 0, 0.7);
         }
 
-        * {
+         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             transition: all 0.3s ease;
         }
-
-        body {
+        
+       body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             background-color: var(--bg-primary);
@@ -58,11 +59,6 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
 
         .header {
             background: var(--accent-gradient);
@@ -81,6 +77,230 @@
             margin: 0;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             animation: fadeInUp 0.5s ease forwards;
+        }
+        
+         .try-out {
+  background-color: #007bff; /* Primary blue color */
+  color: #ffffff; /* White text */
+  border: none; /* No border for a sleek look */
+  padding: 10px 20px; /* Comfortable padding */
+  font-size: 14px; /* Readable font size */
+  font-weight: bold; /* Emphasized text */
+  border-radius: 5px; /* Slightly rounded corners */
+  cursor: pointer; /* Pointer cursor for better UX */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.try-out:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow for hover */
+}
+
+        /* Auth Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--modal-overlay);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-modal {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            width: 450px;
+            max-width: 90%;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: zoomIn 0.3s ease;
+        }
+
+        .auth-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .auth-modal-header h2 {
+            font-size: 20px;
+            color: var(--accent-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+            color: var(--accent-color);
+        }
+
+        .auth-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(107, 95, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover, .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .try-out:active {
+           background-color: #003d80; /* Even darker on click */
+           transform: scale(0.98); /* Slight shrink on click */
+         }
+     
+        
+        .result-div{
+           display:flex;
+           justify-content: center;
+           align-items:center;
+           margin-top: 10px;
+           padding-top:5px;
+           border-top: 1px solid var(--border-color);
+           height:30px;
+           color: green;
+        }
+        .auth-status {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .auth-status.authorized {
+            color: var(--post-color);
+        }
+
+        .auth-status i {
+            margin-right: 5px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+               @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .theme-toggle {
@@ -102,29 +322,6 @@
             transform: rotate(180deg);
             background: rgba(255, 255, 255, 0.3);
         }
-        .try-out {
-  background-color: #007bff; /* Primary blue color */
-  color: #ffffff; /* White text */
-  border: none; /* No border for a sleek look */
-  padding: 10px 20px; /* Comfortable padding */
-  font-size: 14px; /* Readable font size */
-  font-weight: bold; /* Emphasized text */
-  border-radius: 5px; /* Slightly rounded corners */
-  cursor: pointer; /* Pointer cursor for better UX */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-  transition: all 0.3s ease-in-out; /* Smooth transition for hover effect */
-}
-
-.try-out:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow for hover */
-}
-
-.try-out:active {
-  background-color: #003d80; /* Even darker on click */
-  transform: scale(0.98); /* Slight shrink on click */
-}
-        
 
         .schemes {
             display: flex;
@@ -152,8 +349,7 @@
         .scheme-select:hover {
             border-color: var(--accent-color);
         }
-
-        .authorize-btn {
+         .authorize-btn {
             background: var(--accent-gradient);
             color: white;
             border: none;
@@ -174,6 +370,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+      
         .endpoint {
             margin-bottom: 24px;
             border: 1px solid var(--border-color);
@@ -182,6 +379,14 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             animation: fadeInUp 0.5s ease forwards;
             background: var(--bg-primary);
+        }
+
+        .endpoint:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .endpoint:nth-child(3) {
+            animation-delay: 0.2s;
         }
 
         .method {
@@ -207,19 +412,24 @@
             text-transform: uppercase;
         }
 
-        .endpoint-content {
-            padding: 24px;
-            background-color: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
+         .responseContainer {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .textContainer {
+        
+
+       .textContainer {
             display: flex;
             align-items: center;
             margin-bottom: 16px;
             gap: 16px;
         }
 
+       
         input {
             flex: 1;
             padding: 12px 16px;
@@ -236,12 +446,10 @@
             outline: none;
         }
 
-        .responseContainer {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .responseTextSize {
@@ -249,8 +457,8 @@
             margin-bottom: 12px;
             color: var(--text-primary);
         }
-
-        .get {
+        
+       .get {
             color: var(--get-color);
             background-color: var(--get-bg);
         }
@@ -270,18 +478,40 @@
             background-color: var(--delete-bg);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+           .endpoint-content {
+            padding: 24px;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+        
+     
+        
+
+        .endpoint-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
+        .response-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: #263238;
+            color: #fff;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .response-box.active {
+            display: block;
+            animation: slideUp 0.3s ease forwards;
+        }
+
+      
         @media (max-width: 768px) {
             .container {
                 padding: 0 16px;
@@ -317,506 +547,771 @@
 
 <body>
     <div class="header">
-        <div class="container">
-            <h1>STRIDE</h1>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-        </div>
+        <h1>STRIDE</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">"🌓"</button>
     </div>
+
     <div class="container">
         <div class="schemes">
             <select class="scheme-select">
                 <option>HTTPS</option>
                 <option>HTTP</option>
             </select>
-            <button class="authorize-btn">
-                Authorize 🔒
+            <button class="authorize-btn" id="authorize-btn">
+                Authorize &#128274;
             </button>
         </div>
+
         <div class="section-title">
             <div>
                 <span>sample</span>
                 <div class="section-subtitle">Sample data</div>
             </div>
         </div>
+
         <div id="endpoints-container"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-
+    
+    <div class="modal-overlay" id="auth-modal-overlay">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h2>Authorization</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            
+            <select class="auth-select" id="auth-method-select">
+                <option value="none">No Auth</option>
+                <option value="basic">Basic Auth</option>
+                <option value="bearer">Bearer Token</option>
+                <option value="apikey">API Key</option>
+                <option value="jwt">JWT</option>
+                <option value="oauth2">OAuth 2.0</option>
+            </select>
+            
+            
+            <div id="auth-none" class="auth-form active">
+                <p>No authorization will be applied to requests.</p>
+            </div>
+            
+           
+            <div id="auth-basic" class="auth-form">
+                <div class="form-group">
+                    <label for="basic-username">Username</label>
+                    <input type="text" id="basic-username" class="form-control" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="basic-password">Password</label>
+                    <input type="password" id="basic-password" class="form-control" placeholder="Enter password">
+                </div>
+            </div>
+            
+           
+            <div id="auth-bearer" class="auth-form">
+                <div class="form-group">
+                    <label for="bearer-token">Token</label>
+                    <input type="text" id="bearer-token" class="form-control" placeholder="Enter token">
+                </div>
+            </div>
+            
+           
+            <div id="auth-apikey" class="auth-form">
+                <div class="form-group">
+                    <label for="apikey-name">Key Name</label>
+                    <input type="text" id="apikey-name" class="form-control" placeholder="Enter API key name">
+                </div>
+                <div class="form-group">
+                    <label for="apikey-value">Key Value</label>
+                    <input type="text" id="apikey-value" class="form-control" placeholder="Enter API key value">
+                </div>
+                <div class="form-group">
+                    <label for="apikey-location">Location</label>
+                    <select id="apikey-location" class="form-control">
+                        <option value="header">Header</option>
+                        <option value="query">Query Parameter</option>
+                    </select>
+                </div>
+            </div>
+            
+        
+            <div id="auth-jwt" class="auth-form">
+                <div class="form-group">
+                    <label for="jwt-token">JWT Token</label>
+                    <input type="text" id="jwt-token" class="form-control" placeholder="Enter JWT token">
+                </div>
+            </div>
+            
+           
+            <div id="auth-oauth2" class="auth-form">
+                <div class="form-group">
+                    <label for="oauth-client-id">Client ID</label>
+                    <input type="text" id="oauth-client-id" class="form-control" placeholder="Enter client ID">
+                </div>
+                <div class="form-group">
+                    <label for="oauth-client-secret">Client Secret</label>
+                    <input type="password" id="oauth-client-secret" class="form-control" placeholder="Enter client secret">
+                </div>
+                <div class="form-group">
+                    <label for="oauth-token-url">Token URL</label>
+                    <input type="text" id="oauth-token-url" class="form-control" placeholder="Enter token URL">
+                </div>
+                <div class="form-group">
+                    <label for="oauth-scope">Scopes (space-separated)</label>
+                    <input type="text" id="oauth-scope" class="form-control" placeholder="Enter scopes">
+                </div>
+            </div>
+            <div class="result-div"></div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-auth">Cancel</button>
+                <button class="btn-primary" id="save-auth">Authorize</button>
+            </div>
+        </div>
+    </div>
+    
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
 
     <script>
+    console.log("HIiiii");
+   
+    let editor;
+    let editorsss;
+    
+    var response = null;
+    var apis = null;
+    let authData = {
+        method: 'none',
+        credentials: {}
+    };
+    let isAuthorized = false;
 
-        var response = null;
-        var apis = null;
-        let editor;
-        let editorsss;
-        async function main() {
-            await fetchAPIList();
-        }
+    async function main() {
+        console.log("Hi");
+        await fetchAPIList();
+    }
 
-        async function fetchAPIList() {
+    async function fetchAPIList() {
+        try {
             response = await fetch("jsonCon");
             console.log(response);
             apis = await response.json();
-        }
-        document.addEventListener('DOMContentLoaded', async function () {
-            await main();
             console.log(apis);
-            initializeUI();
+        } catch (error) {
+            console.error('Failed to fetch API list:', error);
+            alert('Error fetching API list. Please check your server.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        await main(); 
+        if (!apis) {
+            alert('Failed to fetch APIs. Check your server connection.');
+            return;
+        }
+        initializeUI();
+        initializeAuthModal();
+    });
+
+    function initializeAuthModal() {
+        const authorizeBtn = document.getElementById('authorize-btn');
+        const modalOverlay = document.getElementById('auth-modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        const cancelAuth = document.getElementById('cancel-auth');
+        const saveAuth = document.getElementById('save-auth');
+        const authMethodSelect = document.getElementById('auth-method-select');
+
+        
+        authorizeBtn.addEventListener('click', () => {
+        	
+            modalOverlay.style.display = 'flex';
+        });
+
+        
+        closeModal.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+        });
+
+        cancelAuth.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+        });
+
+      
+        authMethodSelect.addEventListener('change', (e) => {
+            const selectedMethod = e.target.value;
+
+            const forms = document.querySelectorAll('.auth-form');
+            forms.forEach(form => {
+                form.classList.remove('active');
+            });
+
+            const selectedForm = document.getElementById(`auth-${selectedMethod}`);
+            if (selectedForm) {
+                selectedForm.classList.add('active');
+            }
+        });
+
+        
+        saveAuth.addEventListener('click', async () => {
+            const method = authMethodSelect.value;
+            authData.method = method;
+            authData.credentials = {};
+
+            switch (method) {
+                case 'basic':
+                    authData.credentials.username = document.getElementById('basic-username').value;
+                    authData.credentials.password = document.getElementById('basic-password').value;
+                    break;
+                case 'bearer':
+                    authData.credentials.token = document.getElementById('bearer-token').value;
+                    break;
+                case 'apikey':
+                    authData.credentials.name = document.getElementById('apikey-name').value;
+                    authData.credentials.value = document.getElementById('apikey-value').value;
+                    authData.credentials.location = document.getElementById('apikey-location').value;
+                    break;
+                case 'jwt':
+                    authData.credentials.token = document.getElementById('jwt-token').value;
+                    break;
+                case 'oauth2':
+                    authData.credentials.clientId = document.getElementById('oauth-client-id').value;
+                    authData.credentials.clientSecret = document.getElementById('oauth-client-secret').value;
+                    authData.credentials.tokenUrl = document.getElementById('oauth-token-url').value;
+                    authData.credentials.scope = document.getElementById('oauth-scope').value;
+
+                    const token = await fetchOAuthToken(
+                        authData.credentials.clientId,
+                        authData.credentials.clientSecret,
+                        authData.credentials.tokenUrl,
+                        authData.credentials.scope
+                    );
+
+                    if (token) {
+                        localStorage.setItem('oauth_token', token);
+                        authData.credentials.token = token;
+                    } else {
+                        alert('Failed to fetch OAuth token. Please check your credentials.');
+                        return; 
+                    }
+                    break;
+            }
+
+            if (validateAuthCredentials()) {
+            	const result = document.querySelector(".result-div");
+                result.innerText = "Authorization successful";
+            	
+                isAuthorized = true;
+                updateAuthorizationStatus();
+                setTimeout(() => {
+                	result.innerText = "";
+                	   modalOverlay.style.display = 'none';
+            	}, 2000);
+               
+                
+            } else {
+            	const result = document.querySelector(".result-div");
+            	result.innerText ='Please fill in all required fields for the selected authorization method.';
+            }
+        });
+    }
+	
+    async function fetchOAuthToken(clientId, clientSecret, tokenUrl, scope) {
+        try {
+            const response = await fetch(tokenUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    grant_type: 'client_credentials', 
+                    scope: scope || '',
+                }),
+            });
+
+            if (!response.ok) {
+                console.error('Error fetching OAuth token:', response.statusText);
+                return null;
+            }
+
+            const data = await response.json();
+            return data.access_token || null; 
+        } catch (error) {
+            console.error('Error in fetchOAuthToken:', error);
+            return null;
+        }
+    }
+
+    function validateAuthCredentials() {
+        const method = authData.method;
+        const credentials = authData.credentials;
+
+        if (method === 'none') return true;
+
+        switch (method) {
+            case 'basic':
+                return credentials.username && credentials.password;
+            case 'bearer':
+            case 'jwt':
+                return credentials.token;
+            case 'apikey':
+                return credentials.name && credentials.value;
+            case 'oauth2':
+                return credentials.clientId && credentials.clientSecret && credentials.tokenUrl && credentials.token;
+            default:
+                return false;
+        }
+    }
+
+    function updateAuthorizationStatus() {
+        const authorizeBtn = document.getElementById('authorize-btn');
+
+        if (isAuthorized) {
+            if (!authorizeBtn.querySelector('.auth-status')) {
+                const statusSpan = document.createElement('span');
+                statusSpan.className = 'auth-status authorized';
+                statusSpan.innerHTML = '<i>&#10004;</i>';
+                authorizeBtn.appendChild(statusSpan);
+            }
+        } else {
+            const statusSpan = authorizeBtn.querySelector('.auth-status');
+            if (statusSpan) {
+                authorizeBtn.removeChild(statusSpan);
+            }
+        }
+    }
+
+    function applyAuthToRequest(requestHeaders, requestParams) {
+        if (!isAuthorized) {
+        	
+        	return { headers: requestHeaders, params: requestParams };
+        }
+
+        const headers = { ...requestHeaders };
+        let params;
+        if (authData.method=="apikey"){
+         params = { ...requestParams };
+        }
+
+        switch (authData.method) {
+            case 'basic':
+                const base64Credentials = btoa(`${authData.credentials.username}:${authData.credentials.password}`);
+                headers['Authorization'] = `Basic ${base64Credentials}`;
+                break;
+            case 'bearer':
+            case 'jwt':
+            	console.log("Hiiiiiiiiiiiiiiiiiiii");
+            	
+                headers['Authorization'] = `Bearer ${authData.credentials.token}`;
+                break;
+            case 'apikey':
+                if (authData.credentials.location === 'header') {
+                    headers[authData.credentials.name] = authData.credentials.value;
+                } else {
+                    params[authData.credentials.name] = authData.credentials.value;
+                }
+                break;
+            case 'oauth2':
+                headers['Authorization'] = `Bearer ${localStorage.getItem('oauth_token') || 'mock-oauth-token'}`;
+                break;
+        }
+        console.log(headers);
+        console.log(params);
+        if(params!= undefined)
+        return { headers, params };
+        else
+        	return {headers}
+    }
+    
+    
+    function createMethodElement(api, method, url, index) {
+        const methodDiv = document.createElement('div');
+        methodDiv.className = 'method';
+
+        const methodLabel = document.createElement('span');
+        if (method.includes(".")) {
+            method = method.split(".")
+            method = method[0];
+        }
+        methodLabel.className = `method-label ${method.toLowerCase()}`;
+
+        methodLabel.textContent = method;
+
+        const urlSpan = document.createElement('span');
+        urlSpan.className = 'endpoint-url';
+        urlSpan.textContent = url;
+
+        /*const descSpan = document.createElement('span');
+        descSpan.className = 'endpoint-description';
+        descSpan.textContent = description;*/
+
+        methodDiv.appendChild(methodLabel);
+        methodDiv.appendChild(urlSpan);
+        /*methodDiv.appendChild(descSpan);*/
+
+        const content = document.createElement('div');
+        content.className = 'endpoint-content';
+
+        const tryButton = document.createElement('button');
+        tryButton.className = 'try-out';
+        tryButton.textContent = 'Test';
+
+        const responseBox = document.createElement('pre');
+        responseBox.className = 'response-box';
+
+
+        content.appendChild(responseBox);
+
+        methodDiv.addEventListener('click', () => {
+            const allContents = document.querySelectorAll('.endpoint-content');
+            allContents.forEach(el => el.classList.remove('active'));
+            content.classList.add('active');
+            initializeRequest(api, method, index);
+            content.appendChild(tryButton);
+            initializeResponse(api, method, index);
+
+
         });
 
 
-        function createMethodElement(api, method, url, index) {
-            const methodDiv = document.createElement('div');
-            methodDiv.className = 'method';
+        tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
 
-            const methodLabel = document.createElement('span');
+        return [methodDiv, content];
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    function initializeUI() {
+        const container = document.getElementById('endpoints-container');
+        apis.forEach(api => {
+            const endpoint = document.createElement('div');
+            endpoint.className = 'endpoint';
+
+            api.methods.forEach((method, index) => {
+                const [methodEl, contentEl] = createMethodElement(api, method, api.url, index);
+                endpoint.appendChild(methodEl);
+                endpoint.appendChild(contentEl);
+            });
+
+            container.appendChild(endpoint);
+        });
+    }
+    function initializeRequest(api, method, index) {
+        var idValue = 0;
+        var curEndPointContent = document.querySelectorAll('.endpoint-content');
+        curEndPointContent.forEach((className) => className.innerHTML = "");
+        var lineBreak = document.createElement("br");
+        curEndPointContent.forEach((className) => {
+            if (className.classList.contains('active')) {
+                className.innerHTML = "";
+                if (api.requestDataType[index].length > 0) {
+                    var paramHeading = document.createElement("p");
+                    paramHeading.innerText = "REQUEST PARAMETER";
+                    className.appendChild(paramHeading);
+                    for (let i = 0; i < api.requestDataType[index].length; i++) {
+                        if (api.requestDataType[index][i] != undefined) {
+                            className.appendChild(lineBreak);
+                            var responseArea = document.createElement("div");
+                            var dataName = document.createElement("p");
+                            dataName.style.fontSize = "20px";
+                            dataName.innerText = api.requestDataName[index][i] + " : ";
+                            responseArea.className = "textContainer";
+                            var inputBox = document.createElement("input");
+                            inputBox.type = "text";
+                            inputBox.placeholder = api.requestDataType[index][i];
+                            inputBox.id = "parameter" + idValue;
+                            idValue++;
+                            responseArea.appendChild(dataName);
+                            responseArea.appendChild(inputBox);
+                            className.appendChild(responseArea);
+                        }
+                    }
+                }
+                if (api.requestBodyType[index].length > 0) {
+                    var paramHeadingBody = document.createElement("p");
+                    paramHeadingBody.innerText = "REQUEST BODY";
+                    className.appendChild(paramHeadingBody);
+
+                    for (let i = 0; i < api.requestBodyType[index].length; i++) {
+                        if (api.requestBodyType[index][i] !== undefined) {
+                            className.appendChild(lineBreak);
+
+                            // Create the container for the response area
+                            var responseArea = document.createElement("div");
+                            responseArea.className = "textContainer";
+
+                            // Create and style the parameter label
+                            var dataName = document.createElement("p");
+                            dataName.style.fontSize = "20px";
+                            dataName.innerText = api.requestBodyName[index][i] + " : ";
+                            responseArea.appendChild(dataName);
+
+                            // Create the container for Ace Editor
+                            var container = document.createElement("div");
+                            let uniqueId = "api-editor-" + idValue; // Ensure unique ID
+                            container.className = "parameter" + idValue;
+                            container.id = uniqueId; // Assign the unique ID for Ace to recognize
+
+                            container.style.width = "100%";
+                            container.style.height = "fit-content";
+                            container.style.minHeight = "100px";
+
+
+                            responseArea.appendChild(container);
+                            className.appendChild(responseArea);
+
+                            // Initialize Ace Editor
+                            editor = ace.edit(uniqueId);
+                            //editor.setTheme("ace/theme/monokai");
+                            editor.setTheme("ace/theme/dracula");
+                            editor.session.setMode("ace/mode/json");
+                            editor.setFontSize(16);
+                            var fieldObj={};
+                            for(let j=0;j<api.bodyFields[index].length;j++){
+                            	fieldObj[api.bodyFields[index][j]]="value "+(j+1);
+                            }
+                            editor.setValue(JSON.stringify(fieldObj,null,2));
+
+                            idValue++;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+    function initializeResponse(api, method, index) {
+        console.log(index);
+        var curEndPointContent = document.querySelectorAll('.endpoint-content');
+        var responseArea = null;
+        console.log(api);
+
+        curEndPointContent.forEach((className) => {
+            if (className.classList.contains('active')) {
+                for (var i = 0; i < api.response[index].length; i++) {
+                    var lineBreak = document.createElement("br");
+                    responseArea = document.createElement("div");
+                    responseArea.className = "responseContainer";
+                    var responseCode = document.createElement("p");
+                    responseCode.className = "responseTextSize";
+                    responseCode.innerText = "Response Code : " + api.response[index][i].ResponseCode;
+                    var description = document.createElement("p");
+                    description.className = "responseTextSize";
+                    description.innerText = "Description : " + api.response[index][i].Description;
+                    var mediaType = document.createElement("p");
+                    mediaType.className = "responseTextSize";
+                    mediaType.innerText = "Media Type : " + api.response[index][i].MediaType;
+                    var schema = document.createElement("p");
+                    schema.className = "responseTextSize";
+                    schema.innerText = "Schema : " + api.response[index][i].Schema;
+                    var deprecated = document.createElement("p");
+                    deprecated.className = "responseTextSize";
+                    deprecated.innerText = "Deprecated : " + api.response[index][i].Deprecated;
+                    var headers = document.createElement("p");
+                    headers.className = "responseTextSize";
+                    headers.innerText = "Header : " + api.response[index][i].Headers;
+                    var examples = document.createElement("p");
+                    examples.className = "responseTextSize";
+                    let container = document.createElement("div");
+                    container.className = "editor-container";
+                    container.id = "api-editor"; // Ensure the ID is correctly set
+                    container.style.width = "100%";
+                    container.style.height = "200px";
+                    examples.innerText = "Response : ";
+                    if (api.response[index][i].ResponseCode != undefined) {
+                        responseArea.appendChild(responseCode);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].Description != undefined) {
+                        responseArea.appendChild(description);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].MediaType != undefined) {
+                        responseArea.appendChild(mediaType);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].Schema != undefined) {
+                        responseArea.appendChild(schema);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].Deprecated != undefined) {
+                        responseArea.appendChild(deprecated);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].Headers != undefined) {
+                        responseArea.appendChild(headers);
+                        responseArea.appendChild(lineBreak);
+                    }
+                    if (api.response[index][i].Examples != undefined) {
+                        responseArea.appendChild(examples);
+                        responseArea.appendChild(container);
+                    }
+                    console.log(responseArea);
+
+                    className.appendChild(responseArea);
+
+                    // Initialize Ace Editor after appending
+                    editorsss = ace.edit("api-editor");
+                    // editorsss.setTheme("ace/theme/monokai");
+                    editorsss.setTheme("ace/theme/dracula");
+
+                    editorsss.session.setMode("ace/mode/json");
+                    editorsss.setFontSize(16); // Optional: Set font size
+                    editorsss.setReadOnly(true);
+                    console.log(api.response[index][i].Examples);
+                    var parsedJSON=""
+                    try{
+                    	parsedJSON=JSON.parse(api.response[index][i].Examples);
+                    	editorsss.setValue(JSON.stringify(parsedJSON,null,2));
+                    }
+                    catch(e){
+                        editorsss.session.setMode("ace/mode/plain_text");
+                        editorsss.setTheme("ace/theme/textmate");
+                    	editorsss.setValue(api.response[index][i].Examples);
+                    }
+                    
+                    
+
+                }
+            }
+        });
+
+    }
+
+
+
+    function isValidJson(jsonString) {
+        try {
+            JSON.parse(jsonString);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function getRequestHeaders(api, index, headerParam) {
+        const headers = {};
+        if (api.requestHeaderName[index].length > 0) {
+            for (var i = 0; i < api.requestHeaderName[index].length; i++) {
+                const headerKey = api.requestHeaderName[index][i];
+                const headerValue = headerParam[i];
+                if (headerKey && headerValue) {
+                    headers[headerKey] = headerValue;
+                }
+            }
+        }
+        return headers;
+    }
+
+    function getRequestBody(api, index, method, bodyValue) {
+        if (["POST", "PUT", "GET", "DELETE"].includes(method)) {
+            const requestBody = bodyValue
+            return requestBody;
+        }
+        return null;
+    }
+
+    function getRequestParam(api, index, urlParam) {
+        var endPoint = "";
+        if (api.requestDataName[index].length > 0) {
+            for (var i = 0; i < api.requestDataName[index].length; i++) {
+                const urlParamName = api.requestDataName[index][i];
+                const urlParamValue = urlParam[i];
+                if (urlParamName && urlParamValue && i != api.requestDataName[index].length - 1) {
+                    endPoint += urlParamName + "=" + urlParamValue + "&";
+                }
+                else if (urlParamName && urlParamValue) {
+                    endPoint += urlParamName + "=" + urlParamValue
+                }
+            }
+        }
+        console.log(endPoint);
+        return endPoint;
+    }
+
+    function removeSlash(string) {
+        var newString = "";
+        for (var i = 0; i < string.length; i++) {
+            if (string[i] != "/") {
+                newString += string[i];
+            }
+        }
+        return newString;
+    }
+    async function fetchAnswer(div, button, api, method, index) {
+        try {
+            var inputParamArray = [];
+            var bodyValue = "";
+            var urlParam = [];
+            var totalLength = api.requestBodyName[index].length + api.requestDataName[index].length;
+            for (var i = 0; i < totalLength; i++) {
+                var paramId = document.querySelector(".parameter" + i);
+                var paramIdText = "";
+                if (paramId == null) {
+                    paramIdText = document.getElementById("parameter" + i);
+                }
+                if (paramId != null) {
+                    inputParamArray[i] = editor.getValue();
+                }
+                else {
+                    inputParamArray[i] = paramIdText.value;
+                }
+                paramIdText.value = "";
+            }
+            console.log(inputParamArray);
+            for (var i = 0; i < api.requestDataName[index].length; i++) {
+                urlParam[i] = inputParamArray.shift();
+            }
+            bodyValue = inputParamArray.shift();
+            var method = api.methods[index];
             if (method.includes(".")) {
-                method = method.split(".")
+                method = method.split(".");
                 method = method[0];
             }
-            methodLabel.className = `method-label ${method.toLowerCase()}`;
-
-            methodLabel.textContent = method;
-
-            const urlSpan = document.createElement('span');
-            urlSpan.className = 'endpoint-url';
-            urlSpan.textContent = url;
-
-            /*const descSpan = document.createElement('span');
-            descSpan.className = 'endpoint-description';
-            descSpan.textContent = description;*/
-
-            methodDiv.appendChild(methodLabel);
-            methodDiv.appendChild(urlSpan);
-            /*methodDiv.appendChild(descSpan);*/
-
-            const content = document.createElement('div');
-            content.className = 'endpoint-content';
-
-            const tryButton = document.createElement('button');
-            tryButton.className = 'try-out';
-            tryButton.textContent = 'Test';
-
-            const responseBox = document.createElement('pre');
-            responseBox.className = 'response-box';
+            let options = { method: method, headers: {} };
 
 
-            content.appendChild(responseBox);
 
-            methodDiv.addEventListener('click', () => {
-                const allContents = document.querySelectorAll('.endpoint-content');
-                allContents.forEach(el => el.classList.remove('active'));
-                content.classList.add('active');
-                initializeRequest(api, method, index);
-                content.appendChild(tryButton);
-                initializeResponse(api, method, index);
-
-
-            });
-
-
-            tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
-
-            return [methodDiv, content];
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
-        }
-
-        function initializeUI() {
-            const container = document.getElementById('endpoints-container');
-            apis.forEach(api => {
-                const endpoint = document.createElement('div');
-                endpoint.className = 'endpoint';
-
-                api.methods.forEach((method, index) => {
-                    const [methodEl, contentEl] = createMethodElement(api, method, api.url, index);
-                    endpoint.appendChild(methodEl);
-                    endpoint.appendChild(contentEl);
-                });
-
-                container.appendChild(endpoint);
-            });
-        }
-        function initializeRequest(api, method, index) {
-            var idValue = 0;
-            var curEndPointContent = document.querySelectorAll('.endpoint-content');
-            curEndPointContent.forEach((className) => className.innerHTML = "");
-            var lineBreak = document.createElement("br");
-            curEndPointContent.forEach((className) => {
-                if (className.classList.contains('active')) {
-                    className.innerHTML = "";
-                    if (api.requestDataType[index].length > 0) {
-                        var paramHeading = document.createElement("p");
-                        paramHeading.innerText = "REQUEST PARAMETER";
-                        className.appendChild(paramHeading);
-                        for (let i = 0; i < api.requestDataType[index].length; i++) {
-                            if (api.requestDataType[index][i] != undefined) {
-                                className.appendChild(lineBreak);
-                                var responseArea = document.createElement("div");
-                                var dataName = document.createElement("p");
-                                dataName.style.fontSize = "20px";
-                                dataName.innerText = api.requestDataName[index][i] + " : ";
-                                responseArea.className = "textContainer";
-                                var inputBox = document.createElement("input");
-                                inputBox.type = "text";
-                                inputBox.placeholder = api.requestDataType[index][i];
-                                inputBox.id = "parameter" + idValue;
-                                idValue++;
-                                responseArea.appendChild(dataName);
-                                responseArea.appendChild(inputBox);
-                                className.appendChild(responseArea);
-                            }
-                        }
+            // Add request body if method is POST, PUT, PATCH, or DELETE
+            if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+                const requestBody = getRequestBody(api, index, method, bodyValue);
+                if (requestBody) {
+                    for (var i = 0; i < api.requestHeaderType[index].length; i++) {
+                        console.log(api.requestHeaderType[index][i]);
+                        options.headers[api.requestHeaderName[index][i]] = api.requestHeaderType[index][i];
                     }
-                    if (api.requestBodyType[index].length > 0) {
-                        var paramHeadingBody = document.createElement("p");
-                        paramHeadingBody.innerText = "REQUEST BODY";
-                        className.appendChild(paramHeadingBody);
-
-                        for (let i = 0; i < api.requestBodyType[index].length; i++) {
-                            if (api.requestBodyType[index][i] !== undefined) {
-                                className.appendChild(lineBreak);
-
-                                // Create the container for the response area
-                                var responseArea = document.createElement("div");
-                                responseArea.className = "textContainer";
-
-                                // Create and style the parameter label
-                                var dataName = document.createElement("p");
-                                dataName.style.fontSize = "20px";
-                                dataName.innerText = api.requestBodyName[index][i] + " : ";
-                                responseArea.appendChild(dataName);
-
-                                // Create the container for Ace Editor
-                                var container = document.createElement("div");
-                                let uniqueId = "api-editor-" + idValue; // Ensure unique ID
-                                container.className = "parameter" + idValue;
-                                container.id = uniqueId; // Assign the unique ID for Ace to recognize
-
-                                container.style.width = "100%";
-                                container.style.height = "fit-content";
-                                container.style.minHeight = "100px";
-
-
-                                responseArea.appendChild(container);
-                                className.appendChild(responseArea);
-
-                                // Initialize Ace Editor
-                                editor = ace.edit(uniqueId);
-                                //editor.setTheme("ace/theme/monokai");
-                                editor.setTheme("ace/theme/dracula");
-                                editor.session.setMode("ace/mode/json");
-                                editor.setFontSize(16);
-                                var fieldObj={};
-                                for(let j=0;j<api.bodyFields[index].length;j++){
-                                	fieldObj[api.bodyFields[index][j]]="value "+(j+1);
-                                }
-                                editor.setValue(JSON.stringify(fieldObj,null,2));
-
-                                idValue++;
-                            }
-                        }
-                    }
+                    options.body = requestBody;
+                    
+                    options.headers = applyAuthToRequest(options.headers);
+                    console.log(options.headers);
+                    console.log(requestBody);
+                    console.log("fetched Answer");
                 }
-            });
-        }
+            }
 
-
-        function initializeResponse(api, method, index) {
-            console.log(index);
-            var curEndPointContent = document.querySelectorAll('.endpoint-content');
-            var responseArea = null;
-            console.log(api);
-
-            curEndPointContent.forEach((className) => {
-                if (className.classList.contains('active')) {
-                    for (var i = 0; i < api.response[index].length; i++) {
-                        var lineBreak = document.createElement("br");
-                        responseArea = document.createElement("div");
-                        responseArea.className = "responseContainer";
-                        var responseCode = document.createElement("p");
-                        responseCode.className = "responseTextSize";
-                        responseCode.innerText = "Response Code : " + api.response[index][i].ResponseCode;
-                        var description = document.createElement("p");
-                        description.className = "responseTextSize";
-                        description.innerText = "Description : " + api.response[index][i].Description;
-                        var mediaType = document.createElement("p");
-                        mediaType.className = "responseTextSize";
-                        mediaType.innerText = "Media Type : " + api.response[index][i].MediaType;
-                        var schema = document.createElement("p");
-                        schema.className = "responseTextSize";
-                        schema.innerText = "Schema : " + api.response[index][i].Schema;
-                        var deprecated = document.createElement("p");
-                        deprecated.className = "responseTextSize";
-                        deprecated.innerText = "Deprecated : " + api.response[index][i].Deprecated;
-                        var headers = document.createElement("p");
-                        headers.className = "responseTextSize";
-                        headers.innerText = "Header : " + api.response[index][i].Headers;
-                        var examples = document.createElement("p");
-                        examples.className = "responseTextSize";
-                        let container = document.createElement("div");
-                        container.className = "editor-container";
-                        container.id = "api-editor"; // Ensure the ID is correctly set
-                        container.style.width = "100%";
-                        container.style.height = "200px";
-                        examples.innerText = "Response : ";
-                        if (api.response[index][i].ResponseCode != undefined) {
-                            responseArea.appendChild(responseCode);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].Description != undefined) {
-                            responseArea.appendChild(description);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].MediaType != undefined) {
-                            responseArea.appendChild(mediaType);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].Schema != undefined) {
-                            responseArea.appendChild(schema);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].Deprecated != undefined) {
-                            responseArea.appendChild(deprecated);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].Headers != undefined) {
-                            responseArea.appendChild(headers);
-                            responseArea.appendChild(lineBreak);
-                        }
-                        if (api.response[index][i].Examples != undefined) {
-                            responseArea.appendChild(examples);
-                            responseArea.appendChild(container);
-                        }
-                        console.log(responseArea);
-
-                        className.appendChild(responseArea);
-
-                        // Initialize Ace Editor after appending
-                        editorsss = ace.edit("api-editor");
-                        // editorsss.setTheme("ace/theme/monokai");
-                        editorsss.setTheme("ace/theme/dracula");
-
-                        editorsss.session.setMode("ace/mode/json");
-                        editorsss.setFontSize(16); // Optional: Set font size
-                        editorsss.setReadOnly(true);
-                        console.log(api.response[index][i].Examples);
-                        var parsedJSON=""
-                        try{
-                        	parsedJSON=JSON.parse(api.response[index][i].Examples);
-                        	editorsss.setValue(JSON.stringify(parsedJSON,null,2));
-                        }
-                        catch(e){
-                            editorsss.session.setMode("ace/mode/plain_text");
-                            editorsss.setTheme("ace/theme/textmate");
-                        	editorsss.setValue(api.response[index][i].Examples);
-                        }
-                        
-                        
-
-                    }
-                }
-            });
-
-        }
-
-        function isValidJson(jsonString) {
+            // Add request parameters if provided
+            var fullUrl = "";
+            const requestParams = getRequestParam(api, index, urlParam);
+            console.log("req", requestParams);
+            if (requestParams) {
+                fullUrl = removeSlash(api.url);
+                const queryString = requestParams
+                fullUrl += "?" + queryString;
+            }
+            else {
+                fullUrl = removeSlash(api.url);
+            }
+            console.log("URL", fullUrl);
+            let response = "";
+            let parser = new DOMParser();
             try {
-                JSON.parse(jsonString);
-                return true;
-            } catch (e) {
-                return false;
+                response = await fetch(fullUrl, options);
             }
-        }
-
-        function getRequestHeaders(api, index, headerParam) {
-            const headers = {};
-            if (api.requestHeaderName[index].length > 0) {
-                for (var i = 0; i < api.requestHeaderName[index].length; i++) {
-                    const headerKey = api.requestHeaderName[index][i];
-                    const headerValue = headerParam[i];
-                    if (headerKey && headerValue) {
-                        headers[headerKey] = headerValue;
-                    }
-                }
-            }
-            return headers;
-        }
-
-        function getRequestBody(api, index, method, bodyValue) {
-            if (["POST", "PUT", "GET", "DELETE"].includes(method)) {
-                const requestBody = bodyValue
-                return requestBody;
-            }
-            return null;
-        }
-
-        function getRequestParam(api, index, urlParam) {
-            var endPoint = "";
-            if (api.requestDataName[index].length > 0) {
-                for (var i = 0; i < api.requestDataName[index].length; i++) {
-                    const urlParamName = api.requestDataName[index][i];
-                    const urlParamValue = urlParam[i];
-                    if (urlParamName && urlParamValue && i != api.requestDataName[index].length - 1) {
-                        endPoint += urlParamName + "=" + urlParamValue + "&";
-                    }
-                    else if (urlParamName && urlParamValue) {
-                        endPoint += urlParamName + "=" + urlParamValue
-                    }
-                }
-            }
-            console.log(endPoint);
-            return endPoint;
-        }
-
-        function removeSlash(string) {
-            var newString = "";
-            for (var i = 0; i < string.length; i++) {
-                if (string[i] != "/") {
-                    newString += string[i];
-                }
-            }
-            return newString;
-        }
-        async function fetchAnswer(div, button, api, method, index) {
-            try {
-                var inputParamArray = [];
-                var bodyValue = "";
-                var urlParam = [];
-                var totalLength = api.requestBodyName[index].length + api.requestDataName[index].length;
-                for (var i = 0; i < totalLength; i++) {
-                    var paramId = document.querySelector(".parameter" + i);
-                    var paramIdText = "";
-                    if (paramId == null) {
-                        paramIdText = document.getElementById("parameter" + i);
-                    }
-                    if (paramId != null) {
-                        inputParamArray[i] = editor.getValue();
-                    }
-                    else {
-                        inputParamArray[i] = paramIdText.value;
-                    }
-                    paramIdText.value = "";
-                }
-                console.log(inputParamArray);
-                for (var i = 0; i < api.requestDataName[index].length; i++) {
-                    urlParam[i] = inputParamArray.shift();
-                }
-                bodyValue = inputParamArray.shift();
-                var method = api.methods[index];
-                if (method.includes(".")) {
-                    method = method.split(".");
-                    method = method[0];
-                }
-                let options = { method: method, headers: {} };
-
-
-
-                // Add request body if method is POST, PUT, PATCH, or DELETE
-                if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-                    const requestBody = getRequestBody(api, index, method, bodyValue);
-                    if (requestBody) {
-                        for (var i = 0; i < api.requestHeaderType[index].length; i++) {
-                            console.log(api.requestHeaderType[index][i]);
-                            options.headers[api.requestHeaderName[index][i]] = api.requestHeaderType[index][i];
-                        }
-                        options.body = requestBody;
-                        console.log(requestBody);
-                    }
-                }
-
-                // Add request parameters if provided
-                var fullUrl = "";
-                const requestParams = getRequestParam(api, index, urlParam);
-                console.log("req", requestParams);
-                if (requestParams) {
-                    fullUrl = removeSlash(api.url);
-                    const queryString = requestParams
-                    fullUrl += "?" + queryString;
-                }
-                else {
-                    fullUrl = removeSlash(api.url);
-                }
-                console.log("URL", fullUrl);
-                let response = "";
-                let parser = new DOMParser();
-                try {
-                    response = await fetch(fullUrl, options);
-                }
-                catch (error) {
-                    console.log(error);
-                    let responseObject = {
-                        Deprecated: false,
-                        Description: "Failed To Fetch",
-                        Examples: error.message,
-                        method: method,
-                        ResponseCode: "Network Error",
-                        check: "response Check"
-                    };
-                    api.response[index] = [responseObject];
-                    updateResponse(api.response[index][0], method, index)
-                    return;
-                }
-                const contentType = response.headers.get("content-type");
-
-                let result = `Status: ${response.status} ${response.statusText}\n\n`;
-
-                if (contentType && contentType.includes("application/json")) {
-                    const jsonResult = await response.json();
-                    result += JSON.stringify(jsonResult, null, 2);
-                } else {
-                    result += await response.text();
-                }
-                if (result.includes("<!doctype html>")) {
-                    let doc = parser.parseFromString(result, "text/html");
-                    result = doc.querySelector("pre").innerText
-                    if (result.includes("<!doctype html>")) {
-                        result = doc.querySelector("p").innerText
-                    }
-                    else {
-                        var newResult = "";
-                        for (var i = 0; i < result.length; i++) {
-                            if (result[i] == "[") {
-                                break;
-                            }
-                            else {
-                                newResult += result[i];
-                            }
-                        }
-                        result = newResult;
-                    }
-                }
-                var newResult = result;
-                let status = result.split("\n")[0].split(":");
-                console.log("Status", status);
-                result = result.split("\n").slice(1).join("\n").trim();
-                if (isValidJson(result)) {
-                    result = JSON.parse(result)
-                    var newJson = {};
-                    newJson[status[0]] = status[1];
-                    result = { ...newJson, ...result };
-                    result = JSON.stringify(result, null, 2);
-                }
-                else {
-                    result = newResult;
-                }
-                console.log("bankai", result);
-                let responseObject = {
-                    Deprecated: false,
-                    Description: "Successfully fetched",
-                    Examples: result,
-                    Headers: ['Content-Type: application/json'],
-                    method: method,
-                    ResponseCode: "200",
-                    check: "response Check"
-                };
-                api.response[index] = [responseObject];
-                updateResponse(api.response[index][0], method, index)
-            } catch (error) {
+            catch (error) {
                 console.log(error);
                 let responseObject = {
                     Deprecated: false,
@@ -827,114 +1322,182 @@
                     check: "response Check"
                 };
                 api.response[index] = [responseObject];
-                console.log(api);
                 updateResponse(api.response[index][0], method, index)
                 return;
             }
-            finally {
-                console.log(response);
+            const contentType = response.headers.get("content-type");
+
+            let result = `Status: ${response.status} ${response.statusText}\n\n`;
+
+            if (contentType && contentType.includes("application/json")) {
+                const jsonResult = await response.json();
+                result += JSON.stringify(jsonResult, null, 2);
+            } else {
+                result += await response.text();
             }
+            if (result.includes("<!doctype html>")) {
+                let doc = parser.parseFromString(result, "text/html");
+                result = doc.querySelector("pre").innerText
+                if (result.includes("<!doctype html>")) {
+                    result = doc.querySelector("p").innerText
+                }
+                else {
+                    var newResult = "";
+                    for (var i = 0; i < result.length; i++) {
+                        if (result[i] == "[") {
+                            break;
+                        }
+                        else {
+                            newResult += result[i];
+                        }
+                    }
+                    result = newResult;
+                }
+            }
+            var newResult = result;
+            let status = result.split("\n")[0].split(":");
+            console.log("Status", status);
+            result = result.split("\n").slice(1).join("\n").trim();
+            if (isValidJson(result)) {
+                result = JSON.parse(result)
+                var newJson = {};
+                newJson[status[0]] = status[1];
+                result = { ...newJson, ...result };
+                result = JSON.stringify(result, null, 2);
+            }
+            else {
+                result = newResult;
+            }
+            console.log("bankai", result);
+            let responseObject = {
+                Deprecated: false,
+                Description: "Successfully fetched",
+                Examples: result,
+                Headers: ['Content-Type: application/json'],
+                method: method,
+                ResponseCode: "200",
+                check: "response Check"
+            };
+            api.response[index] = [responseObject];
+            updateResponse(api.response[index][0], method, index)
+        } catch (error) {
+            console.log(error);
+            let responseObject = {
+                Deprecated: false,
+                Description: "Failed To Fetch",
+                Examples: error.message,
+                method: method,
+                ResponseCode: "Network Error",
+                check: "response Check"
+            };
+            api.response[index] = [responseObject];
+            console.log(api);
+            updateResponse(api.response[index][0], method, index)
+            return;
+        }
+        finally {
+            console.log(response);
+        }
+    }
+
+    function updateResponse(api, method, index) {
+        var responseArea = document.querySelectorAll(".responseContainer");
+        for (var i = 0; i < responseArea.length; i++) {
+            responseArea[i].innerHTML = "";
+            console.log("Naruto");
         }
 
-        function updateResponse(api, method, index) {
-            var responseArea = document.querySelectorAll(".responseContainer");
-            for (var i = 0; i < responseArea.length; i++) {
-                responseArea[i].innerHTML = "";
-                console.log("Naruto");
-            }
+        var responseBox = document.querySelector(".active");
+        var lineBreak = document.createElement("br");
 
-            var responseBox = document.querySelector(".active");
-            var lineBreak = document.createElement("br");
+        responseArea = document.createElement("div");
+        responseArea.className = "responseContainer";
 
-            responseArea = document.createElement("div");
-            responseArea.className = "responseContainer";
+        var responseCode = document.createElement("p");
+        responseCode.className = "responseTextSize";
+        responseCode.innerText = "Response Code : " + api.ResponseCode;
 
-            var responseCode = document.createElement("p");
-            responseCode.className = "responseTextSize";
-            responseCode.innerText = "Response Code : " + api.ResponseCode;
+        var description = document.createElement("p");
+        description.className = "responseTextSize";
+        description.innerText = "Description : " + api.Description;
 
-            var description = document.createElement("p");
-            description.className = "responseTextSize";
-            description.innerText = "Description : " + api.Description;
+        var mediaType = document.createElement("p");
+        mediaType.className = "responseTextSize";
+        mediaType.innerText = "Media Type : " + api.MediaType;
 
-            var mediaType = document.createElement("p");
-            mediaType.className = "responseTextSize";
-            mediaType.innerText = "Media Type : " + api.MediaType;
+        var schema = document.createElement("p");
+        schema.className = "responseTextSize";
+        schema.innerText = "Schema : " + api.Schema;
 
-            var schema = document.createElement("p");
-            schema.className = "responseTextSize";
-            schema.innerText = "Schema : " + api.Schema;
+        var deprecated = document.createElement("p");
+        deprecated.className = "responseTextSize";
+        deprecated.innerText = "Deprecated : " + api.Deprecated;
 
-            var deprecated = document.createElement("p");
-            deprecated.className = "responseTextSize";
-            deprecated.innerText = "Deprecated : " + api.Deprecated;
+        var headers = document.createElement("p");
+        headers.className = "responseTextSize";
+        headers.innerText = "Header : ";
+        response.headers.forEach((value, name) => {
+            console.log(`${name}: ${value}`);
 
-            var headers = document.createElement("p");
-            headers.className = "responseTextSize";
-            headers.innerText = "Header : ";
-            response.headers.forEach((value, name) => {
-                console.log(`${name}: ${value}`);
+        	 headers.innerText +=(`${name}: ${value}`);
+          });
 
-            	 headers.innerText +=(`${name}: ${value}`);
-              });
+        // Create a container for Ace Editor
+        // let container = document.createElement("div");
+        //container.className = "editor-container";
+        //container.id = "api-editors"; // Assign an ID for Ace initialization
+        //container.style.width = "100%";
+        //container.style.height = "300px"; // Ensure the height is sufficient for Ace
 
-            // Create a container for Ace Editor
-            // let container = document.createElement("div");
-            //container.className = "editor-container";
-            //container.id = "api-editors"; // Assign an ID for Ace initialization
-            //container.style.width = "100%";
-            //container.style.height = "300px"; // Ensure the height is sufficient for Ace
-
-            if (api.ResponseCode != undefined) {
-                responseArea.appendChild(responseCode);
-                responseArea.appendChild(lineBreak);
-            }
-            if (api.Description != undefined) {
-                responseArea.appendChild(description);
-                responseArea.appendChild(lineBreak);
-            }
-            if (api.MediaType != undefined) {
-                responseArea.appendChild(mediaType);
-                responseArea.appendChild(lineBreak);
-            }
-            if (api.Schema != undefined) {
-                responseArea.appendChild(schema);
-                responseArea.appendChild(lineBreak);
-            }
-            if (api.Deprecated != undefined) {
-                responseArea.appendChild(deprecated);
-                responseArea.appendChild(lineBreak);
-            }
-
-            if (api.Headers != undefined) {
-                responseArea.appendChild(headers);
-                responseArea.appendChild(lineBreak);
-            }
-
-            if (api.Examples != undefined) {
-                let container = document.createElement("div");
-                container.className = "editor-container";
-                container.id = "api-editor"; // Ensure the ID is correctly set
-                container.style.width = "100%";
-                container.style.height = "200px"; // Set a height for the Ace Editor
-                responseArea.appendChild(container); // Append container to the response area
-            }
-
-            responseBox.appendChild(responseArea);
-
-            // Initialize Ace Editor after appending
-            editorsss = ace.edit("api-editor");
-            // editorsss.setTheme("ace/theme/monokai");
-            editorsss.setTheme("ace/theme/dracula");
-
-            editorsss.session.setMode("ace/mode/json");
-            editorsss.setFontSize(16); // Optional: Set font size
-            editorsss.setReadOnly(true);
-            editorsss.setValue(api.Examples, 1);
+        if (api.ResponseCode != undefined) {
+            responseArea.appendChild(responseCode);
+            responseArea.appendChild(lineBreak);
+        }
+        if (api.Description != undefined) {
+            responseArea.appendChild(description);
+            responseArea.appendChild(lineBreak);
+        }
+        if (api.MediaType != undefined) {
+            responseArea.appendChild(mediaType);
+            responseArea.appendChild(lineBreak);
+        }
+        if (api.Schema != undefined) {
+            responseArea.appendChild(schema);
+            responseArea.appendChild(lineBreak);
+        }
+        if (api.Deprecated != undefined) {
+            responseArea.appendChild(deprecated);
+            responseArea.appendChild(lineBreak);
         }
 
-      
+        if (api.Headers != undefined) {
+            responseArea.appendChild(headers);
+            responseArea.appendChild(lineBreak);
+        }
 
+        if (api.Examples != undefined) {
+            let container = document.createElement("div");
+            container.className = "editor-container";
+            container.id = "api-editor"; // Ensure the ID is correctly set
+            container.style.width = "100%";
+            container.style.height = "200px"; // Set a height for the Ace Editor
+            responseArea.appendChild(container); // Append container to the response area
+        }
+
+        responseBox.appendChild(responseArea);
+
+        // Initialize Ace Editor after appending
+        editorsss = ace.edit("api-editor");
+        // editorsss.setTheme("ace/theme/monokai");
+        editorsss.setTheme("ace/theme/dracula");
+
+        editorsss.session.setMode("ace/mode/json");
+        editorsss.setFontSize(16); // Optional: Set font size
+        editorsss.setReadOnly(true);
+        editorsss.setValue(api.Examples, 1);
+    }
+
+  
     </script>
 </body>
 
