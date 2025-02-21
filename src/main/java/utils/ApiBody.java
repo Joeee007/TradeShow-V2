@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface ApiBody {
 	String name();
     String type();
+    String schema() default "";
 }

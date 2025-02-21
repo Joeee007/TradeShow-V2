@@ -28,7 +28,7 @@ public class UserServlet extends HttpServlet {
     
     
     
-    @ApiBody(name="body",type="JSON")
+    @ApiBody(name="body",type="JSON",schema="Example")
     @ApiHeader(name="Content-Type",type="application/json")
     @ResponseParam(
             responseCode = "200",

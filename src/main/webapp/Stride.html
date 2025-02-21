@@ -511,7 +511,11 @@
                                 editor.setTheme("ace/theme/dracula");
                                 editor.session.setMode("ace/mode/json");
                                 editor.setFontSize(16);
-                                editor.setValue('{\n\t"example": "This is a sample JSON text for Ace Editor."\n}', 1);
+                                var fieldObj={};
+                                for(let j=0;j<api.bodyFields[index].length;j++){
+                                	fieldObj[api.bodyFields[index][j]]="value "+(j+1);
+                                }
+                                editor.setValue(JSON.stringify(fieldObj,null,2));
 
                                 idValue++;
                             }
@@ -601,7 +605,8 @@
                         editorsss.setFontSize(16); // Optional: Set font size
                         editorsss.setReadOnly(true);
                         console.log(api.response[index][i].Examples);
-                        editorsss.setValue(JSON.stringify(JSON.parse(api.response[index][i].Examples), null, 2));
+                        var parsedJSON=JSON.parse(api.response[index][i].Examples);
+                        editorsss.setValue(JSON.stringify(parsedJSON,null,2));
 
                     }
                 }

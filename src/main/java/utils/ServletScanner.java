@@ -1,5 +1,6 @@
 package utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class ServletScanner {
     List<List<String>> headerTypeList=new ArrayList<>();
     List<List<String>> headerNameList=new ArrayList<>();
     List<List<JSONObject>> responseList=new ArrayList<>();
+    List<List<String>> mainFieldList=new ArrayList<>();
     
         
         public JSONArray scanServlets() {
@@ -41,6 +43,7 @@ public class ServletScanner {
             	paramTypeList.clear();
             	paramNameList.clear();
             	responseList.clear();
+            	mainFieldList.clear();
                 WebServlet annotation = servlet.getAnnotation(WebServlet.class);
                 if (annotation != null) {
                     JSONObject endpoint = new JSONObject();
@@ -57,6 +60,7 @@ public class ServletScanner {
                     endpoint.put("requestBodyType", bodyTypeList);
                     endpoint.put("requestHeaderName", headerNameList);
                     endpoint.put("requestHeaderType", headerTypeList);
+                    endpoint.put("bodyFields", mainFieldList);
                     endpoint.put("response", responseList);
     
                     endpoints.put(endpoint);
@@ -125,14 +129,17 @@ public class ServletScanner {
     public void getBody(Method method) {
     	ArrayList<String> bodysubNameList=new ArrayList<>();
 	    ArrayList<String> bodysubTypeList=new ArrayList<>();
+	    ArrayList<String>subFieldList=new ArrayList<>();
 	    if (method.isAnnotationPresent(ApiBody.class)) {
             ApiBody apiBody = method.getAnnotation(ApiBody.class);
             System.out.println("Key: " + apiBody.name() + ", Value: " + apiBody.type());
             bodysubNameList.add(apiBody.name());
             bodysubTypeList.add(apiBody.type());
+            subFieldList=getField(apiBody.schema());
         }
 	    bodyNameList.add(bodysubNameList);
         bodyTypeList.add(bodysubTypeList);
+        mainFieldList.add(subFieldList);
     }
     public void getHeader(Method method) {
     	ArrayList<String> headersubNameList=new ArrayList<>();
@@ -204,6 +211,27 @@ public class ServletScanner {
    	        responseList.add(subResponseList);
    	        
    	}
+        
+    public ArrayList<String> getField(String className) {
+    	ArrayList<String> fieldList=new ArrayList<>();
+    	Class<?> clazz=null;
+		try {
+			clazz = Class.forName(loader.getPackageName()+"."+className);
+			Field[] fields = clazz.getDeclaredFields();
+
+	        for (Field field : fields) {
+	            fieldList.add(field.getName());
+	            System.out.println(field.getName());
+	        }
+		} catch (ClassNotFoundException e) {
+			
+		}
+    	
+		if(clazz==null) {
+			fieldList.add("Example String");
+		}
+        return fieldList;
+    }
 
     public static void main(String[] args) {
         ServletScanner scanner = new ServletScanner();
