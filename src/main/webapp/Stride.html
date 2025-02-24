@@ -1133,14 +1133,13 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/xml-js@1.6.11/dist/xml-js.min.js"></script>
     <script>
         console.log("HIiiii");
 
         let editor;
         let editorsss;
-
+        let curlEditorsss;
         var response = null;
         var apis = null;
         let authData = {
@@ -1528,7 +1527,7 @@
                                 // Create and style the parameter label
                                 var dataName = document.createElement("p");
                                 dataName.style.fontSize = "20px";
-                                dataName.innerText = api.requestBodyName[index][i] + ": ";
+                                dataName.innerText = api.requestBodyName[index][i] + " : ";
                                 responseArea.appendChild(dataName);
 
                                 // Create the container for Ace Editor
@@ -1596,13 +1595,23 @@
                         var headers = document.createElement("p");
                         headers.className = "responseTextSize";
                         headers.innerText = "Header : " + api.response[index][i].Headers;
+                        var curl = document.createElement("p");
+                        curl.className = "responseTextSize";
+                        curl.innerText = "cURL : ";
+                        let curlContainer = document.createElement("div");
+                        curlContainer.className = "curlEditor-container";
+                        curlContainer.id = "curl-editor"+i; 
+                        curlContainer.style.width = "100%";
+                        curlContainer.style.minHeight="50px"; 
+                        curlContainer.style.maxHeight="none"; 
                         var examples = document.createElement("p");
                         examples.className = "responseTextSize";
                         let container = document.createElement("div");
                         container.className = "editor-container";
-                        container.id = "api-editor"+i; // Ensure the ID is correctly set
+                        container.id = "api-editor" + i; // Ensure the ID is correctly set
                         container.style.width = "100%";
-                        container.style.height = "200px";
+                        container.style.width = "100%";
+                        container.style.minHeight="50px";
                         examples.innerText = "Response : ";
                         if (api.response[index][i].ResponseCode != undefined) {
                             responseArea.appendChild(responseCode);
@@ -1628,22 +1637,42 @@
                             responseArea.appendChild(headers);
                             responseArea.appendChild(lineBreak);
                         }
+                        if(api.response[index][i].curl != undefined){
+                        	responseArea.appendChild(curl);
+                            responseArea.appendChild(curlContainer);
+                            responseArea.appendChild(lineBreak);
+                        }
                         if (api.response[index][i].Examples != undefined) {
                             responseArea.appendChild(examples);
                             responseArea.appendChild(container);
                         }
                         console.log(responseArea);
-						
-                            className.appendChild(responseArea);
-                       
+
+                        className.appendChild(responseArea);
+                        if(api.response[index][i].curl != undefined){
+                        curlEditorsss = ace.edit("curl-editor"+i);
+                        curlEditorsss.setTheme("ace/theme/dracula");
+                        curlEditorsss.setOptions({
+                            maxLines: Infinity 
+                        }); 
+                        
+                        curlEditorsss.session.setMode("ace/mode/text");
+                        curlEditorsss.setFontSize(16); // Optional: Set font size
+                        curlEditorsss.setReadOnly(true);
+                        curlEditorsss.setValue(api.response[index][i].curl);
+                        }
+                        if(api.response[index][i].Examples != undefined){
                         // Initialize Ace Editor after appending
-                        editorsss = ace.edit("api-editor"+i);
+                        editorsss = ace.edit("api-editor" + i);
                         // editorsss.setTheme("ace/theme/monokai");
                         editorsss.setTheme("ace/theme/dracula");
-
+                        editorsss.setOptions({
+                            maxLines: Infinity 
+                        }); 
                         editorsss.session.setMode("ace/mode/json");
                         editorsss.setFontSize(16); // Optional: Set font size
                         editorsss.setReadOnly(true);
+                        }
                         console.log(api.response[index][i].Examples);
                         var parsedJSON = ""
                         try {
@@ -1651,8 +1680,6 @@
                             editorsss.setValue(JSON.stringify(parsedJSON, null, 2));
                         }
                         catch (e) {
-                            editorsss.session.setMode("ace/mode/plain_text");
-                            editorsss.setTheme("ace/theme/textmate");
                             editorsss.setValue(api.response[index][i].Examples);
                         }
 
@@ -1853,10 +1880,11 @@
                     Deprecated: false,
                     Description: "Successfully fetched",
                     Examples: result,
-                    Headers: ['Content-Type: application/json'],
+                    Headers: options.headers,
                     method: method,
                     ResponseCode: "200",
-                    check: "response Check"
+                    check: "response Check",
+                    curl:createCurl(api, method, index,options.body,options.headers,fullUrl)
                 };
                 api.response[index] = [responseObject];
                 updateResponse(api.response[index][0], method, index)
@@ -1879,7 +1907,6 @@
                 console.log(response);
             }
         }
-        
 
         function updateResponse(api, method, index) {
             var responseArea = document.querySelectorAll(".responseContainer");
@@ -1955,31 +1982,81 @@
                 responseArea.appendChild(headers);
                 responseArea.appendChild(lineBreak);
             }
-
+            if(api.curl != undefined) {
+                let container = document.createElement("div");
+                container.className = "curlEditor-container";
+                container.id = "curl-editor"; // Ensure the ID is correctly set
+                container.style.width = "100%";
+                container.style.minHeight="50px"; 
+                container.style.maxHeight="none";
+                var curl= document.createElement("p");
+                curl.className = "responseTextSize";
+                curl.innerText="cURL : "
+                responseArea.appendChild(curl);
+                responseArea.appendChild(container); // Append container to the response area
+                responseArea.appendChild(lineBreak);
+            }
+                
             if (api.Examples != undefined) {
                 let container = document.createElement("div");
                 container.className = "editor-container";
                 container.id = "api-editor"; // Ensure the ID is correctly set
                 container.style.width = "100%";
-                container.style.height = "200px"; // Set a height for the Ace Editor
+                container.style.minHeight="50px"; 
+                container.style.maxHeight="none";
+                var examples = document.createElement("p");
+                examples.className = "responseTextSize";
+                examples.innerText="Response : "
+                responseArea.appendChild(examples);
                 responseArea.appendChild(container); // Append container to the response area
             }
 
             responseBox.appendChild(responseArea);
-//            console.log(responseArea+"---------");
+            curlEditorsss = ace.edit("curl-editor");
+            curlEditorsss.setTheme("ace/theme/dracula");
+            curlEditorsss.setOptions({
+                maxLines: Infinity 
+            }); 
 
+            curlEditorsss.session.setMode("ace/mode/text");
+            curlEditorsss.setFontSize(16); // Optional: Set font size
+            curlEditorsss.setReadOnly(true);
+            curlEditorsss.setValue(api.curl);
             // Initialize Ace Editor after appending
             editorsss = ace.edit("api-editor");
             // editorsss.setTheme("ace/theme/monokai");
             editorsss.setTheme("ace/theme/dracula");
-
+            editorsss.setOptions({
+                maxLines: Infinity 
+            }); 
             editorsss.session.setMode("ace/mode/json");
             editorsss.setFontSize(16); // Optional: Set font size
             editorsss.setReadOnly(true);
             editorsss.setValue(api.Examples, 1);
         }
+        function createCurl(api, method, index,data,header,url) {
+            const baseUrl = window.location.origin; 
+            var endpoint = baseUrl+"/"+api.ProjectName
+            if(url){
+            	endpoint+="/"+url;
+            }
+            let curlCommand = `curl -X ${method}`;
 
+            for (const [key, value] of Object.entries(header)) {
+                curlCommand += ` -H "${key}: ${value}"`;
+            }
 
+            if ((method === "POST" || method === "PUT") && data) {
+                curlCommand += ` -d '${data}'`;
+            }
+
+            curlCommand += ` ${endpoint}`;
+           return curlCommand;
+        }
+        function jsonToXml(jsonData){
+        	const xmlData = xmljs.js2xml(jsonData, { compact: true, spaces: 2 });
+        	return xmlData;
+        }
     </script>
 </body>
 

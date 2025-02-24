@@ -61,7 +61,7 @@ public class ServletScanner {
                     endpoint.put("requestHeaderType", headerTypeList);
                     endpoint.put("bodyFields", mainFieldList);
                     endpoint.put("response", responseList);
-    
+                    endpoint.put("ProjectName",ConfigLoader.getProjectName());
                     endpoints.put(endpoint);
                 }
             }
