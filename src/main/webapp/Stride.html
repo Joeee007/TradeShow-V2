@@ -1793,12 +1793,12 @@
                         }
                         options.body = requestBody;
 
-                        const dataOfAuth = applyAuthToRequest(options.headers);
-                        options.headers = dataOfAuth.headers;
-                        console.log("Option", options);
+                       
                     }
                 }
-
+                const dataOfAuth = applyAuthToRequest(options.headers);
+                options.headers = dataOfAuth.headers;
+                console.log("Option", options);
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
