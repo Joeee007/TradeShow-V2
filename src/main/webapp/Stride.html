@@ -725,6 +725,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
 
     <script>
+    
         console.log("HIiiii");
 
         let editor;
@@ -936,27 +937,24 @@
 
         function applyAuthToRequest(requestHeaders, requestParams) {
             if (!isAuthorized) {
-
                 return { headers: requestHeaders, params: requestParams };
             }
 
             const headers = { ...requestHeaders };
-            let params;
-            if (authData.method == "apikey") {
-                params = { ...requestParams };
-            }
+            let params = { ...requestParams };
 
             switch (authData.method) {
                 case 'basic':
                     const base64Credentials = btoa(`${authData.credentials.username}:${authData.credentials.password}`);
                     headers['Authorization'] = `Basic ${base64Credentials}`;
                     break;
+
                 case 'bearer':
                 case 'jwt':
                     console.log("Hiiiiiiiiiiiiiiiiiiii");
-
                     headers['Authorization'] = `Bearer ${authData.credentials.token}`;
                     break;
+
                 case 'apikey':
                     if (authData.credentials.location === 'header') {
                         headers[authData.credentials.name] = authData.credentials.value;
@@ -964,17 +962,18 @@
                         params[authData.credentials.name] = authData.credentials.value;
                     }
                     break;
+
                 case 'oauth2':
                     headers['Authorization'] = `Bearer ${localStorage.getItem('oauth_token') || 'mock-oauth-token'}`;
                     break;
             }
+
             console.log(headers);
             console.log(params);
-            if (params != undefined)
-                return { headers, params };
-            else
-                return { headers }
+
+            return params && Object.keys(params).length > 0 ? { headers, params } : { headers };
         }
+
 
 
         function createMethodElement(api, method, url, index) {
