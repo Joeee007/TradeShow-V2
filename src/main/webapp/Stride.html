@@ -2065,9 +2065,18 @@ padding: 5px 5px 0px 5px;
                 }
                 if (result.includes("<!doctype html>")) {
                     let doc = parser.parseFromString(result, "text/html");
-                    result = doc.querySelector("pre").innerText
-                    if (result.includes("<!doctype html>")) {
-                        result = doc.querySelector("p").innerText
+                    console.log(doc);
+                    result = doc.querySelector("pre")
+                    if(result){
+                    	result=result.innerText;
+                    }
+                    if (result==null) {
+                    	var resultString="";
+                        result = doc.querySelectorAll("p")
+                        for(var i=0;i<result.length-1;i++){
+                        	resultString+=" "+result[i].innerText;
+                        }
+                        result=resultString;
                     }
                     else {
                         var newResult = "";
@@ -2247,6 +2256,7 @@ padding: 5px 5px 0px 5px;
             }
 
             responseBox.appendChild(responseArea);
+            if(api.curl != undefined){
             curlEditorsss = ace.edit("curl-editor");
             curlEditorsss.setTheme("ace/theme/dracula");
             curlEditorsss.setOptions({
@@ -2256,7 +2266,8 @@ padding: 5px 5px 0px 5px;
             curlEditorsss.session.setMode("ace/mode/text");
             curlEditorsss.setFontSize(16); // Optional: Set font size
             curlEditorsss.setReadOnly(true);
-            curlEditorsss.setValue(api.curl);
+            curlEditorsss.setValue(api.curl);}
+            if(api.Examples){
             // Initialize Ace Editor after appending
             editorsss = ace.edit("api-editor");
             // editorsss.setTheme("ace/theme/monokai");
@@ -2267,7 +2278,7 @@ padding: 5px 5px 0px 5px;
             editorsss.session.setMode("ace/mode/json");
             editorsss.setFontSize(16); // Optional: Set font size
             editorsss.setReadOnly(true);
-            editorsss.setValue(api.Examples, 1);
+            editorsss.setValue(api.Examples, 1);}
 
 
             dropdown.addEventListener("change", function () {
