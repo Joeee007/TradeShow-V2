@@ -29,284 +29,447 @@
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --modal-overlay: rgba(0, 0, 0, 0.5);
         }
-        
-            * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
 
-    .header-container {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(
-        45deg, 
-        #7c3aed 0%,
-        #c026d3 25%,
-        #db2777 50%,
-        #c026d3 75%,
-        #7c3aed 100%
-      );
-      background-size: 200% 200%;
-      padding: 2rem;
-/*       min-height: 200px; */
-      animation: gradientMove 15s ease infinite;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+        .header-container {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg,
+                    #7c3aed 0%,
+                    #c026d3 25%,
+                    #db2777 50%,
+                    #c026d3 75%,
+                    #7c3aed 100%);
+            background-size: 200% 200%;
+            padding: 2rem;
+            /*       min-height: 200px; */
+            animation: gradientMove 15s ease infinite;
+        }
 
-    /* Animated circuit lines */
-    .circuit-lines {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.1;
-      pointer-events: none;
-    }
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
 
-    .circuit-line {
-      position: absolute;
-      background: white;
-      animation: glowPulse 2s ease-in-out infinite;
-    }
+            50% {
+                background-position: 100% 50%;
+            }
 
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.3; box-shadow: 0 0 10px white; }
-      50% { opacity: 0.8; box-shadow: 0 0 20px white; }
-    }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-    /* Generate multiple circuit lines */
-    .circuit-line:nth-child(1) {
-      top: 20%;
-      left: -10%;
-      width: 30%;
-      height: 2px;
-      animation-delay: 0s;
-      transform: rotate(45deg);
-    }
+        /* Animated circuit lines */
+        .circuit-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
 
-    .circuit-line:nth-child(2) {
-      top: 60%;
-      right: -10%;
-      width: 40%;
-      height: 2px;
-      animation-delay: 0.5s;
-      transform: rotate(-45deg);
-    }
+        .circuit-line {
+            position: absolute;
+            background: white;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
 
-    /* Floating particles with trails */
-    .particle-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
+        @keyframes glowPulse {
 
-    .particle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: white;
-      border-radius: 50%;
-      animation: particleFloat 8s linear infinite;
-    }
+            0%,
+            100% {
+                opacity: 0.3;
+                box-shadow: 0 0 10px white;
+            }
 
-    .particle::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      border-radius: inherit;
-      animation: particleTail 2s linear infinite;
-    }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 20px white;
+            }
+        }
 
-    @keyframes particleFloat {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(100px, -50px) rotate(180deg); }
-      100% { transform: translate(0, 0) rotate(360deg); }
-    }
+        /* Generate multiple circuit lines */
+        .circuit-line:nth-child(1) {
+            top: 20%;
+            left: -10%;
+            width: 30%;
+            height: 2px;
+            animation-delay: 0s;
+            transform: rotate(45deg);
+        }
 
-    @keyframes particleTail {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0); opacity: 0; }
-    }
+        .circuit-line:nth-child(2) {
+            top: 60%;
+            right: -10%;
+            width: 40%;
+            height: 2px;
+            animation-delay: 0.5s;
+            transform: rotate(-45deg);
+        }
 
-    /* Generate multiple particles */
-    .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-    .particle:nth-child(2) { top: 60%; left: 30%; animation-delay: 1s; }
-    .particle:nth-child(3) { top: 30%; left: 60%; animation-delay: 2s; }
-    .particle:nth-child(4) { top: 70%; left: 80%; animation-delay: 3s; }
+        /* Floating particles with trails */
+        .particle-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
 
-    /* Animated rings */
-    .ring {
-      position: absolute;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: ringExpand 4s ease-out infinite;
-    }
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
 
-    @keyframes ringExpand {
-      0% { transform: scale(0); opacity: 1; }
-      100% { transform: scale(4); opacity: 0; }
-    }
+        .particle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            animation: particleTail 2s linear infinite;
+        }
 
-    .ring:nth-child(1) { top: 30%; left: 20%; width: 50px; height: 50px; animation-delay: 0s; }
-    .ring:nth-child(2) { top: 50%; left: 70%; width: 30px; height: 30px; animation-delay: 1s; }
-    .ring:nth-child(3) { top: 70%; left: 40%; width: 40px; height: 40px; animation-delay: 2s; }
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
 
-    .header-content {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      z-index: 2;
-    }
+            50% {
+                transform: translate(100px, -50px) rotate(180deg);
+            }
 
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      animation: logoEntrance 1.5s ease-out;
-    }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
 
-    @keyframes logoEntrance {
-      0% { transform: translateX(-100px); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
-    }
+        @keyframes particleTail {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
 
-    .logo-box {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      animation: logoPulse 3s ease-in-out infinite;
-      position: relative;
-      overflow: hidden;
-    }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
 
-    /* Logo shine effect */
-    .logo-box::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-      );
-      animation: logoShine 3s ease-in-out infinite;
-    }
+        /* Generate multiple particles */
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
 
-    @keyframes logoShine {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        .particle:nth-child(2) {
+            top: 60%;
+            left: 30%;
+            animation-delay: 1s;
+        }
 
-    @keyframes logoPulse {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.1) rotate(5deg); }
-    }
+        .particle:nth-child(3) {
+            top: 30%;
+            left: 60%;
+            animation-delay: 2s;
+        }
 
-    .title-section {
-      color: white;
-    }
+        .particle:nth-child(4) {
+            top: 70%;
+            left: 80%;
+            animation-delay: 3s;
+        }
 
-    .main-title {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      animation: titleWave 2s ease-in-out infinite;
-      background: linear-gradient(90deg, #fff, #f0f0f0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        /* Animated rings */
+        .ring {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: ringExpand 4s ease-out infinite;
+        }
 
-    @keyframes titleWave {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
+        @keyframes ringExpand {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
 
-    .subtitle {
-      font-size: 0.7rem;
-      opacity: 0;
-      animation: fadeInUp 0.5s ease-out forwards;
-      animation-delay: 0.5s;
-    }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
 
-    @keyframes fadeInUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 0.9; }
-    }
+        .ring:nth-child(1) {
+            top: 30%;
+            left: 20%;
+            width: 50px;
+            height: 50px;
+            animation-delay: 0s;
+        }
 
-    .search-section {
-      position: relative;
-      animation: searchEntrance 1s ease-out 0.5s backwards;
-    }
+        .ring:nth-child(2) {
+            top: 50%;
+            left: 70%;
+            width: 30px;
+            height: 30px;
+            animation-delay: 1s;
+        }
 
-    @keyframes searchEntrance {
-      from { transform: translateX(100px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
+        .ring:nth-child(3) {
+            top: 70%;
+            left: 40%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 2s;
+        }
 
-    .search-box {
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 9999px;
-      padding: 0.8rem 0.8rem 0.8rem 3.3rem;
-      color: white;
-      font-size: 0.9rem;
-      width: 320px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      animation: searchPulse 4s ease-in-out infinite;
-    }
+        .header-content {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 2;
+        }
 
-    @keyframes searchPulse {
-      0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-      50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
-    }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            animation: logoEntrance 1.5s ease-out;
+        }
 
-    .search-box:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
-    }
+        @keyframes logoEntrance {
+            0% {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
 
-    .search-icon {
-      position: absolute;
-      left: 1.2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
-      fill: white;
-      opacity: 0.8;
-      animation: iconSpin 3s linear infinite;
-    }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
-    @keyframes iconSpin {
-      from { transform: translateY(-50%) rotate(0deg); }
-      to { transform: translateY(-50%) rotate(360deg); }
-    }
+        .logo-box {
+
+background: rgba(255, 255, 255, 0.2);
+
+backdrop-filter: blur(10px);
+
+padding: 0.1rem;
+
+border-radius: 1rem;
+
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+border: 1px solid rgba(255, 255, 255, 0.2);
+
+animation: logoPulse 3s ease-in-out infinite;
+
+position: relative;
+
+overflow: hidden;
+
+}
+
+/* Logo shine effect */
+
+.logo-box::after {
+
+content: '';
+
+position: absolute;
+
+top: -50%;
+
+left: -50%;
+
+width: 200%;
+
+height: 200%;
+
+background: linear-gradient(
+
+45deg,
+
+transparent 0%,
+
+rgba(255, 255, 255, 0.1) 50%,
+
+transparent 100%
+
+);
+
+animation: logoShine 3s ease-in-out infinite;
+
+}
+
+.logo-box svg{
+
+width: 63px;
+
+height: 100%;
+
+padding: 5px 5px 0px 5px;
+
+}
+
+        @keyframes logoShine {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes logoPulse {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+        }
+
+        .title-section {
+            color: white;
+        }
+
+        .main-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            animation: titleWave 2s ease-in-out infinite;
+            background: linear-gradient(90deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes titleWave {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+        }
+
+        .search-section {
+            position: relative;
+            animation: searchEntrance 1s ease-out 0.5s backwards;
+        }
+
+        @keyframes searchEntrance {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            padding: 0.8rem 0.8rem 0.8rem 3.3rem;
+            color: white;
+            font-size: 0.9rem;
+            width: 320px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: searchPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes searchPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: white;
+            opacity: 0.8;
+            animation: iconSpin 3s linear infinite;
+        }
+
+        @keyframes iconSpin {
+            from {
+                transform: translateY(-50%) rotate(0deg);
+            }
+
+            to {
+                transform: translateY(-50%) rotate(360deg);
+            }
+        }
 
         .CodeMirror {
             width: 100%;
@@ -316,31 +479,41 @@
         }
 
 
- [data-theme="dark"] {
-    --bg-primary: #0d1117; /* GitHub-like dark background */
-  --bg-secondary: #161b22; /* Slightly lighter */
-  --text-primary: #c9d1d9; /* Light gray */
-  --text-secondary: #8b949e; /* Muted gray */
-  --border-color: #30363d; /* Subtle border */
-  --accent-color: #58a6ff; /* Cool blue accent */
-  --accent-gradient: linear-gradient(135deg, #58a6ff 0%, #79b8ff 100%);
-  --header-text: #ffffff;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --modal-overlay: rgba(0, 0, 0, 0.7);
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            /* GitHub-like dark background */
+            --bg-secondary: #161b22;
+            /* Slightly lighter */
+            --text-primary: #c9d1d9;
+            /* Light gray */
+            --text-secondary: #8b949e;
+            /* Muted gray */
+            --border-color: #30363d;
+            /* Subtle border */
+            --accent-color: #58a6ff;
+            /* Cool blue accent */
+            --accent-gradient: linear-gradient(135deg, #58a6ff 0%, #79b8ff 100%);
+            --header-text: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --modal-overlay: rgba(0, 0, 0, 0.7);
 
-  /* HTTP Method Colors */
-  --get-color: #238636; /* Dark green */
-  --get-bg: rgba(35, 134, 54, 0.1);
+            /* HTTP Method Colors */
+            --get-color: #238636;
+            /* Dark green */
+            --get-bg: rgba(35, 134, 54, 0.1);
 
-  --post-color: #1f6feb; /* Dark blue */
-  --post-bg: rgba(31, 111, 235, 0.1);
+            --post-color: #1f6feb;
+            /* Dark blue */
+            --post-bg: rgba(31, 111, 235, 0.1);
 
-  --put-color: #d29922; /* Dark gold */
-  --put-bg: rgba(210, 153, 34, 0.1);
+            --put-color: #d29922;
+            /* Dark gold */
+            --put-bg: rgba(210, 153, 34, 0.1);
 
-  --delete-color: #da3633; /* Dark red */
-  --delete-bg: rgba(218, 54, 51, 0.1);
-}
+            --delete-color: #da3633;
+            /* Dark red */
+            --delete-bg: rgba(218, 54, 51, 0.1);
+        }
 
         * {
             box-sizing: border-box;
@@ -649,28 +822,28 @@
             border-color: var(--accent-color);
         }
 
-/*         .authorize-btn { */
-/*             background: var(--accent-gradient); */
-/*             color: white; */
-/*             border: none; */
-/*             padding: 12px 24px; */
-/*             border-radius: 8px; */
-/*             cursor: pointer; */
-/*             display: flex; */
-/*             align-items: center; */
-/*             gap: 8px; */
-/*             font-size: 16px; */
-/*             font-weight: 600; */
-/*             transition: transform 0.2s ease, box-shadow 0.2s ease; */
-/*             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
-/*         } */
+        /*         .authorize-btn { */
+        /*             background: var(--accent-gradient); */
+        /*             color: white; */
+        /*             border: none; */
+        /*             padding: 12px 24px; */
+        /*             border-radius: 8px; */
+        /*             cursor: pointer; */
+        /*             display: flex; */
+        /*             align-items: center; */
+        /*             gap: 8px; */
+        /*             font-size: 16px; */
+        /*             font-weight: 600; */
+        /*             transition: transform 0.2s ease, box-shadow 0.2s ease; */
+        /*             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+        /*         } */
 
-/*         .authorize-btn:hover { */
-/*             transform: translateY(-2px); */
-/*             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
-/*         } */
+        /*         .authorize-btn:hover { */
+        /*             transform: translateY(-2px); */
+        /*             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+        /*         } */
 
-.neon-button {
+        .neon-button {
             position: relative;
             padding: 15px 40px;
             font-size: 18px;
@@ -690,8 +863,13 @@
 
         /* Glowing effect */
         @keyframes glowPulse {
-            0% { box-shadow: 0 0 10px rgba(255, 0, 255, 0.4); }
-            100% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.9); }
+            0% {
+                box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.9);
+            }
         }
 
         /* Shine effect */
@@ -724,8 +902,15 @@
         }
 
         @keyframes ripple {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(3); opacity: 0; }
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
         }
 
         /* Hover Pulse */
@@ -830,39 +1015,39 @@
         }
 
         .get {
-            color: var(--bg-primary);
-            background-color: var(--get-color);
+            color: white;
+            background: linear-gradient(135deg, #0074cc, #0056a3);
         }
 
         .post {
-            color: var(--bg-primary);
-            background-color: var(--post-color);
+            color: white;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
         }
 
         .put {
-            color: var(--bg-primary);
-            background-color: var(--put-color);
+            color: white;
+            background: linear-gradient(135deg, #ffc107, #d49a19);
         }
 
         .delete {
-            color: var(--bg-primary);
-            background-color: var(--delete-color);
+            color: white;
+            background: linear-gradient(135deg, #dc3545, #b02a37);
         }
 
         .get-bg {
-            background-color: var(--get-bg);
+            background: linear-gradient(135deg, #e3f2fd, #d1ecf1);
         }
 
         .post-bg {
-            background-color: var(--post-bg);
+            background: linear-gradient(135deg, #e8f5e9, #d4edda);
         }
 
         .put-bg {
-            background-color: var(--put-bg);
+            background: linear-gradient(135deg, #fff3cd, #ffeeba);
         }
 
         .delete-bg {
-            background-color: var(--delete-bg);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
         }
 
         .endpoint-content {
@@ -909,10 +1094,10 @@
                 width: 100%;
             }
 
-/*             .authorize-btn { */
-/*                 width: 100%; */
-/*                 justify-content: center; */
-/*             } */
+            /*             .authorize-btn { */
+            /*                 width: 100%; */
+            /*                 justify-content: center; */
+            /*             } */
 
             .method {
                 flex-direction: column;
@@ -926,93 +1111,94 @@
             }
         }
     </style>
+
 </head>
 
 <body>
-<!--     <div class="header"> -->
-<!--         <h1>STRIDE</h1> -->
-<!--         <button class="theme-toggle" onclick="toggleTheme()">"🌓"</button> -->
-<!--     </div> -->
+    <!--     <div class="header"> -->
+    <!--         <h1>STRIDE</h1> -->
+    <!--         <button class="theme-toggle" onclick="toggleTheme()">"🌓"</button> -->
+    <!--     </div> -->
 
-<div class="header-container">
-    <!-- Circuit lines -->
-    <div class="circuit-lines">
-      <div class="circuit-line"></div>
-      <div class="circuit-line"></div>
-      <div class="circuit-line"></div>
-    </div>
-
-    <!-- Floating particles -->
-    <div class="particle-container">
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-    </div>
-
-    <!-- Expanding rings -->
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-
-    <div class="header-content">
-      <div class="logo-section">
-        <div class="logo-box">
-
-<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle with gradient -->
-  <defs>
-    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#7c3aed"/>
-      <stop offset="50%" style="stop-color:#c026d3"/>
-      <stop offset="100%" style="stop-color:#db2777"/>
-    </linearGradient>
-    
-    <!-- Glow effect -->
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  </defs>
-
-  <!-- Main circle -->
-  <circle cx="60" cy="60" r="56" fill="url(#logoGradient)" filter="url(#glow)"/>
-  
-  <!-- API brackets and forward slash -->
-  <g fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Left bracket -->
-    <path d="M40 35 L30 60 L40 85" filter="url(#glow)"/>
-    
-    <!-- Right bracket -->
-    <path d="M80 35 L90 60 L80 85" filter="url(#glow)"/>
-    
-    <!-- Forward slash -->
-    <path d="M55 40 L65 80" filter="url(#glow)"/>
-  </g>
-  
-  <!-- Decorative dots -->
-  <g fill="white" filter="url(#glow)">
-    <circle cx="30" cy="60" r="3"/>
-    <circle cx="90" cy="60" r="3"/>
-    <circle cx="60" cy="40" r="3"/>
-    <circle cx="60" cy="80" r="3"/>
-  </g>
-</svg>
+    <div class="header-container">
+        <!-- Circuit lines -->
+        <div class="circuit-lines">
+            <div class="circuit-line"></div>
+            <div class="circuit-line"></div>
+            <div class="circuit-line"></div>
         </div>
-        <div class="title-section">
-          <h1 class="main-title">API Documentation</h1>
-          <p class="subtitle">Explore our endpoints</p>
-        </div>
-      </div>
 
-      <div class="search-section">
-        <svg class="search-icon" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        <input type="text" class="search-box" placeholder="Search APIs...">
-      </div>
+        <!-- Floating particles -->
+        <div class="particle-container">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <!-- Expanding rings -->
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-box">
+
+                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background circle with gradient -->
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#7c3aed" />
+                                <stop offset="50%" style="stop-color:#c026d3" />
+                                <stop offset="100%" style="stop-color:#db2777" />
+                            </linearGradient>
+
+                            <!-- Glow effect -->
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+
+                        <!-- Main circle -->
+                        <circle cx="60" cy="60" r="56" fill="url(#logoGradient)" filter="url(#glow)" />
+
+                        <!-- API brackets and forward slash -->
+                        <g fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- Left bracket -->
+                            <path d="M40 35 L30 60 L40 85" filter="url(#glow)" />
+
+                            <!-- Right bracket -->
+                            <path d="M80 35 L90 60 L80 85" filter="url(#glow)" />
+
+                            <!-- Forward slash -->
+                            <path d="M55 40 L65 80" filter="url(#glow)" />
+                        </g>
+
+                        <!-- Decorative dots -->
+                        <g fill="white" filter="url(#glow)">
+                            <circle cx="30" cy="60" r="3" />
+                            <circle cx="90" cy="60" r="3" />
+                            <circle cx="60" cy="40" r="3" />
+                            <circle cx="60" cy="80" r="3" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="title-section">
+                    <h1 class="main-title">API Documentation</h1>
+                    <p class="subtitle">Explore our endpoints</p>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" class="search-box" placeholder="Search APIs...">
+            </div>
+        </div>
     </div>
-  </div>
 
 
     <div class="container">
@@ -1132,10 +1318,10 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xml-js@1.6.11/dist/xml-js.min.js"></script>
+
     <script>
-    
         console.log("HIiiii");
 
         let editor;
@@ -1347,24 +1533,27 @@
 
         function applyAuthToRequest(requestHeaders, requestParams) {
             if (!isAuthorized) {
+
                 return { headers: requestHeaders, params: requestParams };
             }
 
             const headers = { ...requestHeaders };
-            let params = { ...requestParams };
+            let params;
+            if (authData.method == "apikey") {
+                params = { ...requestParams };
+            }
 
             switch (authData.method) {
                 case 'basic':
                     const base64Credentials = btoa(`${authData.credentials.username}:${authData.credentials.password}`);
                     headers['Authorization'] = `Basic ${base64Credentials}`;
                     break;
-
                 case 'bearer':
                 case 'jwt':
                     console.log("Hiiiiiiiiiiiiiiiiiiii");
+
                     headers['Authorization'] = `Bearer ${authData.credentials.token}`;
                     break;
-
                 case 'apikey':
                     if (authData.credentials.location === 'header') {
                         headers[authData.credentials.name] = authData.credentials.value;
@@ -1372,18 +1561,17 @@
                         params[authData.credentials.name] = authData.credentials.value;
                     }
                     break;
-
                 case 'oauth2':
                     headers['Authorization'] = `Bearer ${localStorage.getItem('oauth_token') || 'mock-oauth-token'}`;
                     break;
             }
-
             console.log(headers);
             console.log(params);
-
-            return params && Object.keys(params).length > 0 ? { headers, params } : { headers };
+            if (params != undefined)
+                return { headers, params };
+            else
+                return { headers }
         }
-
 
 
         function createMethodElement(api, method, url, index) {
@@ -1563,13 +1751,23 @@
             });
         }
 
-
         function initializeResponse(api, method, index) {
-            console.log(index);
+            var body = "";
+            var dropdownValue = "JSON";
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var responseArea = null;
-            console.log(api);
+            dropdown = document.createElement("select");
 
+
+            let options = ["JSON", "XML"];
+            options.forEach((optionText) => {
+                let option = document.createElement("option");
+                option.value = optionText;
+                option.textContent = optionText;
+                dropdown.appendChild(option);
+                dropdown.id = "dropDown";
+            });
+            console.log(dropdown);
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
                     for (var i = 0; i < api.response[index].length; i++) {
@@ -1599,10 +1797,10 @@
                         curl.innerText = "cURL : ";
                         let curlContainer = document.createElement("div");
                         curlContainer.className = "curlEditor-container";
-                        curlContainer.id = "curl-editor"+i; 
+                        curlContainer.id = "curl-editor" + i;
                         curlContainer.style.width = "100%";
-                        curlContainer.style.minHeight="50px"; 
-                        curlContainer.style.maxHeight="none"; 
+                        curlContainer.style.minHeight = "50px";
+                        curlContainer.style.maxHeight = "none";
                         var examples = document.createElement("p");
                         examples.className = "responseTextSize";
                         let container = document.createElement("div");
@@ -1610,7 +1808,7 @@
                         container.id = "api-editor" + i; // Ensure the ID is correctly set
                         container.style.width = "100%";
                         container.style.width = "100%";
-                        container.style.minHeight="50px";
+                        container.style.minHeight = "50px";
                         examples.innerText = "Response : ";
                         if (api.response[index][i].ResponseCode != undefined) {
                             responseArea.appendChild(responseCode);
@@ -1636,41 +1834,47 @@
                             responseArea.appendChild(headers);
                             responseArea.appendChild(lineBreak);
                         }
-                        if(api.response[index][i].curl != undefined){
-                        	responseArea.appendChild(curl);
+                        if (api.response[index][i].curl != undefined) {
+                            responseArea.appendChild(curl);
                             responseArea.appendChild(curlContainer);
                             responseArea.appendChild(lineBreak);
                         }
+
                         if (api.response[index][i].Examples != undefined) {
+                            if (isValidJson(api.response[index][i].Examples)) {
+                                responseArea.appendChild(dropdown);
+                                responseArea.appendChild(lineBreak);
+                                body = JSON.parse(api.response[index][i].Examples);
+                            }
                             responseArea.appendChild(examples);
                             responseArea.appendChild(container);
                         }
                         console.log(responseArea);
 
                         className.appendChild(responseArea);
-                        if(api.response[index][i].curl != undefined){
-                        curlEditorsss = ace.edit("curl-editor"+i);
-                        curlEditorsss.setTheme("ace/theme/dracula");
-                        curlEditorsss.setOptions({
-                            maxLines: Infinity 
-                        }); 
-                        
-                        curlEditorsss.session.setMode("ace/mode/text");
-                        curlEditorsss.setFontSize(16); // Optional: Set font size
-                        curlEditorsss.setReadOnly(true);
-                        curlEditorsss.setValue(api.response[index][i].curl);
+                        if (api.response[index][i].curl != undefined) {
+                            curlEditorsss = ace.edit("curl-editor" + i);
+                            curlEditorsss.setTheme("ace/theme/dracula");
+                            curlEditorsss.setOptions({
+                                maxLines: Infinity
+                            });
+
+                            curlEditorsss.session.setMode("ace/mode/text");
+                            curlEditorsss.setFontSize(16); // Optional: Set font size
+                            curlEditorsss.setReadOnly(true);
+                            curlEditorsss.setValue(api.response[index][i].curl);
                         }
-                        if(api.response[index][i].Examples != undefined){
-                        // Initialize Ace Editor after appending
-                        editorsss = ace.edit("api-editor" + i);
-                        // editorsss.setTheme("ace/theme/monokai");
-                        editorsss.setTheme("ace/theme/dracula");
-                        editorsss.setOptions({
-                            maxLines: Infinity 
-                        }); 
-                        editorsss.session.setMode("ace/mode/json");
-                        editorsss.setFontSize(16); // Optional: Set font size
-                        editorsss.setReadOnly(true);
+                        if (api.response[index][i].Examples != undefined) {
+                            // Initialize Ace Editor after appending
+                            editorsss = ace.edit("api-editor" + i);
+                            // editorsss.setTheme("ace/theme/monokai");
+                            editorsss.setTheme("ace/theme/dracula");
+                            editorsss.setOptions({
+                                maxLines: Infinity
+                            });
+                            editorsss.session.setMode("ace/mode/json");
+                            editorsss.setFontSize(16); // Optional: Set font size
+                            editorsss.setReadOnly(true);
                         }
                         console.log(api.response[index][i].Examples);
                         var parsedJSON = ""
@@ -1686,6 +1890,24 @@
 
                     }
                 }
+            });
+
+
+
+            dropdown.addEventListener("change", function () {
+                console.log("asdasf");
+                dropdownVal = this.value;
+                if (dropdownVal == "XML") {
+                    var dropEdit = document.querySelector(".editor-container");
+                    var edit = ace.edit(dropEdit.id);
+                    edit.setValue(jsonToXml(body))
+                }
+                else {
+                    var dropEdit = document.querySelector(".editor-container");
+                    var edit = ace.edit(dropEdit.id);
+                    edit.setValue(JSON.stringify(body, null, 2));
+                }
+
             });
 
         }
@@ -1793,12 +2015,12 @@
                         }
                         options.body = requestBody;
 
-                       
+                        const dataOfAuth = applyAuthToRequest(options.headers);
+                        options.headers = dataOfAuth.headers;
+                        console.log("Option", options);
                     }
                 }
-                const dataOfAuth = applyAuthToRequest(options.headers);
-                options.headers = dataOfAuth.headers;
-                console.log("Option", options);
+
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
@@ -1883,7 +2105,7 @@
                     method: method,
                     ResponseCode: "200",
                     check: "response Check",
-                    curl:createCurl(api, method, index,options.body,options.headers,fullUrl)
+                    curl: createCurl(api, method, index, options.body, options.headers, fullUrl)
                 };
                 api.response[index] = [responseObject];
                 updateResponse(api.response[index][0], method, index)
@@ -1908,11 +2130,19 @@
         }
 
         function updateResponse(api, method, index) {
-            var responseArea = document.querySelectorAll(".responseContainer");
-            for (var i = 0; i < responseArea.length; i++) {
-                responseArea[i].innerHTML = "";
-                console.log("Naruto");
-            }
+            let dropdown = document.createElement("select");
+            var body = "";
+            var dropdownVal = "JSON";
+            // Add options
+            let options = ["JSON", "XML"];
+            options.forEach((optionText) => {
+                let option = document.createElement("option");
+                option.value = optionText;
+                option.textContent = optionText;
+                dropdown.appendChild(option);
+                dropdown.id = "dropDown";
+            });
+            document.querySelectorAll(".responseContainer").forEach(div => div.remove());
 
             var responseBox = document.querySelector(".active");
             var lineBreak = document.createElement("br");
@@ -1981,31 +2211,37 @@
                 responseArea.appendChild(headers);
                 responseArea.appendChild(lineBreak);
             }
-            if(api.curl != undefined) {
+            if (api.curl != undefined) {
                 let container = document.createElement("div");
                 container.className = "curlEditor-container";
                 container.id = "curl-editor"; // Ensure the ID is correctly set
                 container.style.width = "100%";
-                container.style.minHeight="50px"; 
-                container.style.maxHeight="none";
-                var curl= document.createElement("p");
+                container.style.minHeight = "50px";
+                container.style.maxHeight = "none";
+                var curl = document.createElement("p");
                 curl.className = "responseTextSize";
-                curl.innerText="cURL : "
+                curl.innerText = "cURL : "
                 responseArea.appendChild(curl);
                 responseArea.appendChild(container); // Append container to the response area
                 responseArea.appendChild(lineBreak);
             }
-                
+
             if (api.Examples != undefined) {
+                if (isValidJson(api.Examples)) {
+                    responseArea.appendChild(lineBreak);
+                    responseArea.appendChild(dropdown);
+                    responseArea.appendChild(lineBreak);
+                    body = JSON.parse(api.Examples);
+                }
                 let container = document.createElement("div");
                 container.className = "editor-container";
                 container.id = "api-editor"; // Ensure the ID is correctly set
                 container.style.width = "100%";
-                container.style.minHeight="50px"; 
-                container.style.maxHeight="none";
+                container.style.minHeight = "50px";
+                container.style.maxHeight = "none";
                 var examples = document.createElement("p");
                 examples.className = "responseTextSize";
-                examples.innerText="Response : "
+                examples.innerText = "Response : "
                 responseArea.appendChild(examples);
                 responseArea.appendChild(container); // Append container to the response area
             }
@@ -2014,8 +2250,8 @@
             curlEditorsss = ace.edit("curl-editor");
             curlEditorsss.setTheme("ace/theme/dracula");
             curlEditorsss.setOptions({
-                maxLines: Infinity 
-            }); 
+                maxLines: Infinity
+            });
 
             curlEditorsss.session.setMode("ace/mode/text");
             curlEditorsss.setFontSize(16); // Optional: Set font size
@@ -2026,18 +2262,34 @@
             // editorsss.setTheme("ace/theme/monokai");
             editorsss.setTheme("ace/theme/dracula");
             editorsss.setOptions({
-                maxLines: Infinity 
-            }); 
+                maxLines: Infinity
+            });
             editorsss.session.setMode("ace/mode/json");
             editorsss.setFontSize(16); // Optional: Set font size
             editorsss.setReadOnly(true);
             editorsss.setValue(api.Examples, 1);
+
+
+            dropdown.addEventListener("change", function () {
+                dropdownVal = this.value;
+                if (dropdownVal == "XML") {
+                    var dropEdit = document.querySelector(".editor-container");
+                    var edit = ace.edit(dropEdit.id);
+                    edit.setValue(jsonToXml(body))
+                }
+                else {
+                    var dropEdit = document.querySelector(".editor-container");
+                    var edit = ace.edit(dropEdit.id);
+                    edit.setValue(JSON.stringify(body, null, 2));
+                }
+
+            });
         }
-        function createCurl(api, method, index,data,header,url) {
-            const baseUrl = window.location.origin; 
-            var endpoint = baseUrl+"/"+api.ProjectName
-            if(url){
-            	endpoint+="/"+url;
+        function createCurl(api, method, index, data, header, url) {
+            const baseUrl = window.location.origin;
+            var endpoint = baseUrl + "/" + api.ProjectName
+            if (url) {
+                endpoint += "/" + url;
             }
             let curlCommand = `curl -X ${method}`;
 
@@ -2050,13 +2302,34 @@
             }
 
             curlCommand += ` ${endpoint}`;
-           return curlCommand;
+            return curlCommand;
         }
-        function jsonToXml(jsonData){
-        	const xmlData = xmljs.js2xml(jsonData, { compact: true, spaces: 2 });
-        	return xmlData;
+        function jsonToXml(obj, rootName = "root", indent = 2) {
+            function convert(obj, level) {
+                let xml = "";
+                let space = " ".repeat(level * indent);
+
+                for (let key in obj) {
+                    if (!obj.hasOwnProperty(key)) continue;
+                    let value = obj[key];
+
+                    if (typeof value === "object" && !Array.isArray(value)) {
+                        xml += `${space}<${key}>\n${convert(value, level + 1)}${space}</${key}>\n`;
+                    } else if (Array.isArray(value)) {
+                        value.forEach((item) => {
+                            xml += `${space}<${key}>\n${convert(item, level + 1)}${space}</${key}>\n`;
+                        });
+                    } else {
+                        xml += `${space}<${key}>${value}</${key}>\n`;
+                    }
+                }
+                return xml;
+            }
+
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}>\n${convert(obj, 1)}</${rootName}>`;
         }
     </script>
 </body>
+
 
 </html>
