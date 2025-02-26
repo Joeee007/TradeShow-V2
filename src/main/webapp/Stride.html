@@ -1203,21 +1203,13 @@ padding: 5px 5px 0px 5px;
 
     <div class="container">
         <div class="schemes">
-            <select class="scheme-select">
-                <option>HTTPS</option>
-                <option>HTTP</option>
-            </select>
+            <div></div>
             <button class="authorize-btn neon-button" id="authorize-btn">
                 Authorize &#128274;
             </button>
         </div>
 
-        <div class="section-title">
-            <div>
-                <span>sample</span>
-                <div class="section-subtitle">Sample data</div>
-            </div>
-        </div>
+
 
         <div id="endpoints-container"></div>
     </div>
@@ -1322,11 +1314,11 @@ padding: 5px 5px 0px 5px;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
 
     <script>
-        console.log("HIiiii");
 
         let editor;
         let editorsss;
         let curlEditorsss;
+        let urlEditorsss;
         var response = null;
         var apis = null;
         let authData = {
@@ -1336,16 +1328,13 @@ padding: 5px 5px 0px 5px;
         let isAuthorized = false;
 
         async function main() {
-            console.log("Hi");
             await fetchAPIList();
         }
 
         async function fetchAPIList() {
             try {
                 response = await fetch("jsonCon");
-                console.log(response);
                 apis = await response.json();
-                console.log(apis);
             } catch (error) {
                 console.error('Failed to fetch API list:', error);
                 alert('Error fetching API list. Please check your server.');
@@ -1533,27 +1522,24 @@ padding: 5px 5px 0px 5px;
 
         function applyAuthToRequest(requestHeaders, requestParams) {
             if (!isAuthorized) {
-
                 return { headers: requestHeaders, params: requestParams };
             }
 
             const headers = { ...requestHeaders };
-            let params;
-            if (authData.method == "apikey") {
-                params = { ...requestParams };
-            }
+            let params = { ...requestParams };
 
             switch (authData.method) {
                 case 'basic':
                     const base64Credentials = btoa(`${authData.credentials.username}:${authData.credentials.password}`);
                     headers['Authorization'] = `Basic ${base64Credentials}`;
                     break;
+
                 case 'bearer':
                 case 'jwt':
                     console.log("Hiiiiiiiiiiiiiiiiiiii");
-
                     headers['Authorization'] = `Bearer ${authData.credentials.token}`;
                     break;
+
                 case 'apikey':
                     if (authData.credentials.location === 'header') {
                         headers[authData.credentials.name] = authData.credentials.value;
@@ -1561,16 +1547,16 @@ padding: 5px 5px 0px 5px;
                         params[authData.credentials.name] = authData.credentials.value;
                     }
                     break;
+
                 case 'oauth2':
                     headers['Authorization'] = `Bearer ${localStorage.getItem('oauth_token') || 'mock-oauth-token'}`;
                     break;
             }
+
             console.log(headers);
             console.log(params);
-            if (params != undefined)
-                return { headers, params };
-            else
-                return { headers }
+
+            return params && Object.keys(params).length > 0 ? { headers, params } : { headers };
         }
 
 
@@ -1767,7 +1753,6 @@ padding: 5px 5px 0px 5px;
                 dropdown.appendChild(option);
                 dropdown.id = "dropDown";
             });
-            console.log(dropdown);
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
                     for (var i = 0; i < api.response[index].length; i++) {
@@ -1801,6 +1786,15 @@ padding: 5px 5px 0px 5px;
                         curlContainer.style.width = "100%";
                         curlContainer.style.minHeight = "50px";
                         curlContainer.style.maxHeight = "none";
+                        var url = document.createElement("p");
+                        url.className = "responseTextSize";
+                        url.innerText = "Url : ";
+                        let urlContainer = document.createElement("div");
+                        urlContainer.className = "urlEditor-container";
+                        urlContainer.id = "url-editor" + i;
+                        urlContainer.style.width = "100%";
+                        urlContainer.style.minHeight = "50px";
+                        urlContainer.style.maxHeight = "none";
                         var examples = document.createElement("p");
                         examples.className = "responseTextSize";
                         let container = document.createElement("div");
@@ -1839,9 +1833,15 @@ padding: 5px 5px 0px 5px;
                             responseArea.appendChild(curlContainer);
                             responseArea.appendChild(lineBreak);
                         }
-
+                        if(api.response[index][i].responseUrl != undefined){
+                        	responseArea.appendChild(lineBreak);
+                        	responseArea.appendChild(url);
+                            responseArea.appendChild(urlContainer);
+                            responseArea.appendChild(lineBreak);
+                        }
                         if (api.response[index][i].Examples != undefined) {
                             if (isValidJson(api.response[index][i].Examples)) {
+                            	responseArea.appendChild(lineBreak);
                                 responseArea.appendChild(dropdown);
                                 responseArea.appendChild(lineBreak);
                                 body = JSON.parse(api.response[index][i].Examples);
@@ -1849,7 +1849,6 @@ padding: 5px 5px 0px 5px;
                             responseArea.appendChild(examples);
                             responseArea.appendChild(container);
                         }
-                        console.log(responseArea);
 
                         className.appendChild(responseArea);
                         if (api.response[index][i].curl != undefined) {
@@ -1864,6 +1863,19 @@ padding: 5px 5px 0px 5px;
                             curlEditorsss.setReadOnly(true);
                             curlEditorsss.setValue(api.response[index][i].curl);
                         }
+                        console.log(JSON.stringify(api.response[index][i], null, 2))
+                        if(api.response[index][i].responseUrl != undefined){
+                        	urlEditorsss = ace.edit("url-editor" + i);
+                            urlEditorsss.setTheme("ace/theme/dracula");
+                            urlEditorsss.setOptions({
+                                maxLines: Infinity
+                            });
+
+                            urlEditorsss.session.setMode("ace/mode/text");
+                            urlEditorsss.setFontSize(16); // Optional: Set font size
+                            urlEditorsss.setReadOnly(true);
+                            urlEditorsss.setValue(api.response[index][i].responseUrl);
+                        }
                         if (api.response[index][i].Examples != undefined) {
                             // Initialize Ace Editor after appending
                             editorsss = ace.edit("api-editor" + i);
@@ -1876,7 +1888,6 @@ padding: 5px 5px 0px 5px;
                             editorsss.setFontSize(16); // Optional: Set font size
                             editorsss.setReadOnly(true);
                         }
-                        console.log(api.response[index][i].Examples);
                         var parsedJSON = ""
                         try {
                             parsedJSON = JSON.parse(api.response[index][i].Examples);
@@ -1895,7 +1906,6 @@ padding: 5px 5px 0px 5px;
 
 
             dropdown.addEventListener("change", function () {
-                console.log("asdasf");
                 dropdownVal = this.value;
                 if (dropdownVal == "XML") {
                     var dropEdit = document.querySelector(".editor-container");
@@ -1959,7 +1969,6 @@ padding: 5px 5px 0px 5px;
                     }
                 }
             }
-            console.log(endPoint);
             return endPoint;
         }
 
@@ -1992,7 +2001,6 @@ padding: 5px 5px 0px 5px;
                     }
                     paramIdText.value = "";
                 }
-                console.log(inputParamArray);
                 for (var i = 0; i < api.requestDataName[index].length; i++) {
                     urlParam[i] = inputParamArray.shift();
                 }
@@ -2017,14 +2025,12 @@ padding: 5px 5px 0px 5px;
 
                         const dataOfAuth = applyAuthToRequest(options.headers);
                         options.headers = dataOfAuth.headers;
-                        console.log("Option", options);
                     }
                 }
 
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
-                console.log("req", requestParams);
                 if (requestParams) {
                     fullUrl = removeSlash(api.url);
                     const queryString = requestParams
@@ -2033,14 +2039,12 @@ padding: 5px 5px 0px 5px;
                 else {
                     fullUrl = removeSlash(api.url);
                 }
-                console.log("URL", fullUrl);
                 let response = "";
                 let parser = new DOMParser();
                 try {
                     response = await fetch(fullUrl, options);
                 }
                 catch (error) {
-                    console.log(error);
                     let responseObject = {
                         Deprecated: false,
                         Description: "Failed To Fetch",
@@ -2050,7 +2054,7 @@ padding: 5px 5px 0px 5px;
                         check: "response Check"
                     };
                     api.response[index] = [responseObject];
-                    updateResponse(api.response[index][0], method, index)
+                    updateResponse(api,api.response[index][0], method, index)
                     return;
                 }
                 const contentType = response.headers.get("content-type");
@@ -2065,7 +2069,6 @@ padding: 5px 5px 0px 5px;
                 }
                 if (result.includes("<!doctype html>")) {
                     let doc = parser.parseFromString(result, "text/html");
-                    console.log(doc);
                     result = doc.querySelector("pre")
                     if(result){
                     	result=result.innerText;
@@ -2093,7 +2096,6 @@ padding: 5px 5px 0px 5px;
                 }
                 var newResult = result;
                 let status = result.split("\n")[0].split(":");
-                console.log("Status", status);
                 result = result.split("\n").slice(1).join("\n").trim();
                 if (isValidJson(result)) {
                     result = JSON.parse(result)
@@ -2105,7 +2107,6 @@ padding: 5px 5px 0px 5px;
                 else {
                     result = newResult;
                 }
-                console.log("bankai", result);
                 let responseObject = {
                     Deprecated: false,
                     Description: "Successfully fetched",
@@ -2117,9 +2118,8 @@ padding: 5px 5px 0px 5px;
                     curl: createCurl(api, method, index, options.body, options.headers, fullUrl)
                 };
                 api.response[index] = [responseObject];
-                updateResponse(api.response[index][0], method, index)
+                updateResponse(api,api.response[index][0], method, index,fullUrl)
             } catch (error) {
-                console.log(error);
                 let responseObject = {
                     Deprecated: false,
                     Description: "Failed To Fetch",
@@ -2129,16 +2129,14 @@ padding: 5px 5px 0px 5px;
                     check: "response Check"
                 };
                 api.response[index] = [responseObject];
-                console.log(api);
-                updateResponse(api.response[index][0], method, index)
+                updateResponse(api,api.response[index][0], method, index)
                 return;
             }
             finally {
-                console.log(response);
             }
         }
 
-        function updateResponse(api, method, index) {
+        function updateResponse(jsonApi,api, method, index,fullUrl){
             let dropdown = document.createElement("select");
             var body = "";
             var dropdownVal = "JSON";
@@ -2182,11 +2180,6 @@ padding: 5px 5px 0px 5px;
             var headers = document.createElement("p");
             headers.className = "responseTextSize";
             headers.innerText = "Header : ";
-            response.headers.forEach((value, name) => {
-                console.log(`${name}: ${value}`);
-
-                headers.innerText += (`${name}: ${value}`);
-            });
 
             // Create a container for Ace Editor
             // let container = document.createElement("div");
@@ -2215,11 +2208,17 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(deprecated);
                 responseArea.appendChild(lineBreak);
             }
-
             if (api.Headers != undefined) {
-                responseArea.appendChild(headers);
-                responseArea.appendChild(lineBreak);
-            }
+          	  let container = document.createElement("div");
+                container.className = "headerEditor-container";
+                container.id = "header-editor"; // Ensure the ID is correctly set
+                container.style.width = "100%";
+                container.style.minHeight = "50px";
+                container.style.maxHeight = "none";
+              responseArea.appendChild(headers);
+              responseArea.appendChild(container);
+              responseArea.appendChild(lineBreak);
+          }
             if (api.curl != undefined) {
                 let container = document.createElement("div");
                 container.className = "curlEditor-container";
@@ -2234,7 +2233,25 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(container); // Append container to the response area
                 responseArea.appendChild(lineBreak);
             }
-
+            var finalUrl=""
+            if(jsonApi.url!= undefined){
+            	var urlBase = window.location.origin;
+                finalUrl = urlBase + "/" + jsonApi.ProjectName+"/"+fullUrl;
+                let container = document.createElement("div");
+                container.className = "urlEditor-container";
+                container.id = "url-editor"; // Ensure the ID is correctly set
+                container.style.width = "100%";
+                container.style.minHeight = "50px";
+                container.style.maxHeight = "none";
+                var url = document.createElement("p");
+                url.className = "responseTextSize";
+                url.innerText = "Url : "
+                responseArea.appendChild(lineBreak);
+                responseArea.appendChild(url);
+                responseArea.appendChild(container);
+                api.responseUrl=finalUrl;
+                
+            }
             if (api.Examples != undefined) {
                 if (isValidJson(api.Examples)) {
                     responseArea.appendChild(lineBreak);
@@ -2267,6 +2284,19 @@ padding: 5px 5px 0px 5px;
             curlEditorsss.setFontSize(16); // Optional: Set font size
             curlEditorsss.setReadOnly(true);
             curlEditorsss.setValue(api.curl);}
+            if(jsonApi.url != undefined){
+            	// Initialize Ace Editor after appending
+                urlEditorsss = ace.edit("url-editor");
+                // editorsss.setTheme("ace/theme/monokai");
+                urlEditorsss.setTheme("ace/theme/dracula");
+                urlEditorsss.setOptions({
+                    maxLines: Infinity
+                });
+                urlEditorsss.session.setMode("ace/mode/text");
+                urlEditorsss.setFontSize(16); // Optional: Set font size
+                urlEditorsss.setReadOnly(true);
+                urlEditorsss.setValue(finalUrl, 1);
+            }
             if(api.Examples){
             // Initialize Ace Editor after appending
             editorsss = ace.edit("api-editor");
@@ -2279,6 +2309,20 @@ padding: 5px 5px 0px 5px;
             editorsss.setFontSize(16); // Optional: Set font size
             editorsss.setReadOnly(true);
             editorsss.setValue(api.Examples, 1);}
+            if(api.Headers != undefined){
+            headerEditors=ace.edit("header-editor");
+            headerEditors.setTheme("ace/theme/dracula");
+            headerEditors.setOptions({
+                maxLines: Infinity
+            });
+            headerEditors.session.setMode("ace/mode/*");
+            headerEditors.setFontSize(16); 
+            headerEditors.setReadOnly(true);
+            let allHeaders="";
+            response.headers.forEach((value, name) => {
+                allHeaders += (`${name}: ${value}\n`);
+            });
+            headerEditors.setValue(allHeaders,1);}
 
 
             dropdown.addEventListener("change", function () {
