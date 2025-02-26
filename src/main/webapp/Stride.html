@@ -1354,7 +1354,7 @@ padding: 5px 5px 0px 5px;
         function initializeAuthModal() {
             const authorizeBtn = document.getElementById('authorize-btn');
             const modalOverlay = document.getElementById('auth-modal-overlay');
-            const closeModal = document.getElementById('close-modal');
+            const closeModal = document.getElementById('closinte-modal');
             const cancelAuth = document.getElementById('cancel-auth');
             const saveAuth = document.getElementById('save-auth');
             const authMethodSelect = document.getElementById('auth-method-select');
@@ -1776,7 +1776,7 @@ padding: 5px 5px 0px 5px;
                         deprecated.innerText = "Deprecated : " + api.response[index][i].Deprecated;
                         var headers = document.createElement("p");
                         headers.className = "responseTextSize";
-                        headers.innerText = "Header : " + api.response[index][i].Headers;
+                        headers.innerText = "Header : "
                         var curl = document.createElement("p");
                         curl.className = "responseTextSize";
                         curl.innerText = "cURL : ";
@@ -1825,7 +1825,14 @@ padding: 5px 5px 0px 5px;
                             responseArea.appendChild(lineBreak);
                         }
                         if (api.response[index][i].Headers != undefined) {
+                        	let container = document.createElement("div");
+                            container.className = "headerEditor-container";
+                            container.id = "header-editor"; // Ensure the ID is correctly set
+                            container.style.width = "100%";
+                            container.style.minHeight = "50px";
+                            container.style.maxHeight = "none";
                             responseArea.appendChild(headers);
+                            responseArea.appendChild(container);
                             responseArea.appendChild(lineBreak);
                         }
                         if (api.response[index][i].curl != undefined) {
@@ -1876,6 +1883,20 @@ padding: 5px 5px 0px 5px;
                             urlEditorsss.setReadOnly(true);
                             urlEditorsss.setValue(api.response[index][i].responseUrl);
                         }
+                        if(api.response[index][i].Headers != undefined){
+                            headerEditors=ace.edit("header-editor");
+                            headerEditors.setTheme("ace/theme/dracula");
+                            headerEditors.setOptions({
+                                maxLines: Infinity
+                            });
+                            headerEditors.session.setMode("ace/mode/*");
+                            headerEditors.setFontSize(16); 
+                            headerEditors.setReadOnly(true);
+                            let allHeaders="";
+                            response.headers.forEach((value, name) => {
+                                allHeaders += (`${name}: ${value}\n`);
+                            });
+                            headerEditors.setValue(allHeaders,1);}
                         if (api.response[index][i].Examples != undefined) {
                             // Initialize Ace Editor after appending
                             editorsss = ace.edit("api-editor" + i);
@@ -2233,6 +2254,7 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(container); // Append container to the response area
                 responseArea.appendChild(lineBreak);
             }
+            
             var finalUrl=""
             if(jsonApi.url!= undefined){
             	var urlBase = window.location.origin;
