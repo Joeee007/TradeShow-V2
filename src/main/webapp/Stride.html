@@ -1354,7 +1354,7 @@ padding: 5px 5px 0px 5px;
         function initializeAuthModal() {
             const authorizeBtn = document.getElementById('authorize-btn');
             const modalOverlay = document.getElementById('auth-modal-overlay');
-            const closeModal = document.getElementById('closinte-modal');
+            const closeModal = document.getElementById('close-modal');
             const cancelAuth = document.getElementById('cancel-auth');
             const saveAuth = document.getElementById('save-auth');
             const authMethodSelect = document.getElementById('auth-method-select');
@@ -1945,6 +1945,10 @@ padding: 5px 5px 0px 5px;
 
 
 
+
+
+
+
         function isValidJson(jsonString) {
             try {
                 JSON.parse(jsonString);
@@ -2044,11 +2048,10 @@ padding: 5px 5px 0px 5px;
                         }
                         options.body = requestBody;
 
-                        const dataOfAuth = applyAuthToRequest(options.headers);
-                        options.headers = dataOfAuth.headers;
-                    }
+                    } 
                 }
-
+                const dataOfAuth = applyAuthToRequest(options.headers);
+                options.headers = dataOfAuth.headers;
                 // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
@@ -2254,7 +2257,6 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(container); // Append container to the response area
                 responseArea.appendChild(lineBreak);
             }
-            
             var finalUrl=""
             if(jsonApi.url!= undefined){
             	var urlBase = window.location.origin;
