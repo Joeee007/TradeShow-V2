@@ -1221,21 +1221,14 @@ padding: 5px 5px 0px 5px;
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
 
-            <select class="auth-select" id="auth-method-select">
-                <option value="none">No Auth</option>
+   <select class="auth-select" id="auth-method-select">
+                <option value = "nothing"> Select the method </option>
                 <option value="basic">Basic Auth</option>
                 <option value="bearer">Bearer Token</option>
                 <option value="apikey">API Key</option>
                 <option value="jwt">JWT</option>
                 <option value="oauth2">OAuth 2.0</option>
             </select>
-
-
-            <div id="auth-none" class="auth-form active">
-                <p>No authorization will be applied to requests.</p>
-            </div>
-
-
             <div id="auth-basic" class="auth-form">
                 <div class="form-group">
                     <label for="basic-username">Username</label>
@@ -1302,13 +1295,12 @@ padding: 5px 5px 0px 5px;
                     <input type="text" id="oauth-scope" class="form-control" placeholder="Enter scopes">
                 </div>
             </div>
-            <div class="result-div"></div>
+            
 
             <div class="modal-footer">
                 <button class="btn-secondary" id="cancel-auth">Cancel</button>
                 <button class="btn-primary" id="save-auth">Authorize</button>
-            </div>
-        </div>
+            </div>        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
@@ -1435,23 +1427,225 @@ padding: 5px 5px 0px 5px;
                 }
 
                 if (validateAuthCredentials()) {
-                    const result = document.querySelector(".result-div");
-                    result.innerText = "Authorization successful";
+                 
 
                     isAuthorized = true;
                     updateAuthorizationStatus();
                     setTimeout(() => {
-                        result.innerText = "";
+                        
                         modalOverlay.style.display = 'none';
                     }, 2000);
 
 
+           
+                }
+                });
+        }
+        
+        
+  document.addEventListener('DOMContentLoaded', function() {
+            
+            const saveAuthButton = document.getElementById('save-auth');
+            const authMethodSelect = document.getElementById('auth-method-select');
+            const authForms = document.querySelectorAll('.auth-form');
+            const modalFooter = document.querySelector('.modal-footer');
+            
+            
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('validation-message', 'error-message');
+            errorMessage.style.display = 'none';
+            errorMessage.style.color = '#e74c3c';
+            errorMessage.style.padding = '10px';
+            errorMessage.style.marginTop = '10px';
+            errorMessage.style.borderRadius = '4px';
+            errorMessage.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+            errorMessage.style.borderLeft = '4px solid #e74c3c';
+            errorMessage.style.transition = 'all 0.3s ease-in-out';
+            errorMessage.style.transform = 'translateY(-10px)';
+            errorMessage.style.opacity = '0';
+            
+            
+            const successMessage = document.createElement('div');
+            successMessage.classList.add('validation-message', 'success-message');
+            successMessage.style.display = 'none';
+            successMessage.style.color = '#2ecc71';
+            successMessage.style.padding = '10px';
+            successMessage.style.marginTop = '10px';
+            successMessage.style.borderRadius = '4px';
+            successMessage.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
+            successMessage.style.borderLeft = '4px solid #2ecc71';
+            successMessage.style.transition = 'all 0.3s ease-in-out';
+            successMessage.style.transform = 'translateY(-10px)';
+            successMessage.style.opacity = '0';
+            
+
+            modalFooter.parentNode.insertBefore(errorMessage, modalFooter);
+            modalFooter.parentNode.insertBefore(successMessage, modalFooter);
+            
+          
+            authMethodSelect.addEventListener('change', function() {
+                const selectedMethod = this.value;
+                
+                
+                authForms.forEach(form => {
+                    form.style.display = 'none';
+                });
+                
+               
+                if (selectedMethod !== 'nothing') {
+                    document.getElementById(`auth-${selectedMethod}`).style.display = 'block';
+                }
+                
+              
+                hideMessages();
+            });
+            
+         
+            function showErrorMessage(message) {
+              
+                hideSuccessMessage();
+                
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                
+              
+                setTimeout(() => {
+                    errorMessage.style.transform = 'translateY(0)';
+                    errorMessage.style.opacity = '1';
+                }, 10);
+            }
+            
+            
+            function hideErrorMessage() {
+                errorMessage.style.transform = 'translateY(-10px)';
+                errorMessage.style.opacity = '0';
+                
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 300);
+            }
+            
+         
+            function showSuccessMessage(message) {
+               
+                hideErrorMessage();
+                
+                successMessage.textContent = message || 'Authorization Successful';
+                successMessage.style.display = 'block';
+                
+              
+                setTimeout(() => {
+                    successMessage.style.transform = 'translateY(0)';
+                    successMessage.style.opacity = '1';
+                }, 10);
+                
+              
+                setTimeout(() => {
+                    hideSuccessMessage();
+                }, 2000);
+            }
+            
+           
+            function hideSuccessMessage() {
+                successMessage.style.transform = 'translateY(-10px)';
+                successMessage.style.opacity = '0';
+                
+               
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 300);
+            }
+            
+
+            function hideMessages() {
+                hideErrorMessage();
+                hideSuccessMessage();
+            }
+            
+          
+            saveAuthButton.addEventListener('click', function() {
+                const selectedMethod = authMethodSelect.value;
+                
+               
+                if (selectedMethod === 'nothing') {
+                    showErrorMessage('Please select an authorization method');
+                    return;
+                }
+                
+                
+                let isValid = true;
+                let errorMsg = '';
+                
+                switch (selectedMethod) {
+                    case 'basic':
+                        const username = document.getElementById('basic-username').value.trim();
+                        const password = document.getElementById('basic-password').value.trim();
+                        
+                        if (!username || !password) {
+                            isValid = false;
+                            errorMsg = 'Please enter both username and password';
+                        }
+                        break;
+                        
+                    case 'bearer':
+                        const token = document.getElementById('bearer-token').value.trim();
+                        
+                        if (!token) {
+                            isValid = false;
+                            errorMsg = 'Please enter a bearer token';
+                        }
+                        break;
+                        
+                    case 'apikey':
+                        const keyName = document.getElementById('apikey-name').value.trim();
+                        const keyValue = document.getElementById('apikey-value').value.trim();
+                        
+                        if (!keyName || !keyValue) {
+                            isValid = false;
+                            errorMsg = 'Please enter both API key name and value';
+                        }
+                        break;
+                        
+                    case 'jwt':
+                        const jwtToken = document.getElementById('jwt-token').value.trim();
+                        
+                        if (!jwtToken) {
+                            isValid = false;
+                            errorMsg = 'Please enter a JWT token';
+                        }
+                        break;
+                        
+                    case 'oauth2':
+                        const clientId = document.getElementById('oauth-client-id').value.trim();
+                        const clientSecret = document.getElementById('oauth-client-secret').value.trim();
+                        const tokenUrl = document.getElementById('oauth-token-url').value.trim();
+                        
+                        if (!clientId || !clientSecret || !tokenUrl) {
+                            isValid = false;
+                            errorMsg = 'Please fill in all required OAuth 2.0 fields';
+                        }
+                        break;
+                }
+                
+                if (!isValid) {
+                    showErrorMessage(errorMsg);
                 } else {
-                    const result = document.querySelector(".result-div");
-                    result.innerText = 'Please fill in all required fields for the selected authorization method.';
+                    //isAuthorized = true;
+                    updateAuthorizationStatus();
+                    let ele =  document.getElementById('auth-modal-overlay');
+                    showSuccessMessage('Authorization Successful');
+                    setTimeout(() => {
+                      ele.style.display = 'none';
+                    }, 2000);
+                   
                 }
             });
-        }
+  
+            document.getElementById('close-modal').addEventListener('click', hideMessages);
+            document.getElementById('cancel-auth').addEventListener('click', hideMessages);
+        });
+
 
         async function fetchOAuthToken(clientId, clientSecret, tokenUrl, scope) {
             try {
@@ -1503,19 +1697,11 @@ padding: 5px 5px 0px 5px;
         }
 
         function updateAuthorizationStatus() {
-            const authorizeBtn = document.getElementById('authorize-btn');
+        	const authorizeBtn = document.getElementById('authorize-btn');
 
             if (isAuthorized) {
                 if (!authorizeBtn.querySelector('.auth-status')) {
-                    const statusSpan = document.createElement('span');
-                    statusSpan.className = 'auth-status authorized';
-                    statusSpan.innerHTML = '<i>&#10004;</i>';
-                    authorizeBtn.appendChild(statusSpan);
-                }
-            } else {
-                const statusSpan = authorizeBtn.querySelector('.auth-status');
-                if (statusSpan) {
-                    authorizeBtn.removeChild(statusSpan);
+                    authorizeBtn.innerHTML = '<p> Authorized &#128275;</p>';
                 }
             }
         }
