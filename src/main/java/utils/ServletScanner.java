@@ -77,24 +77,41 @@ public class ServletScanner {
             for (Method method : declaredMethods) {
                 if (method.getName().equals("doGet")) {
                     methods.add("GET");
+                    getParams(method);
+                    getBody(method);
+                    getHeader(method);
+                    getResponseParam(method);
                 }
                 if (method.getName().equals("doPost")) {
                     methods.add("POST");
+                    getParams(method);
+                    getBody(method);
+                    getHeader(method);
+                    getResponseParam(method);
                 }
                 if (method.getName().equals("doPut")) {
                     methods.add("PUT");
+                    getParams(method);
+                    getBody(method);
+                    getHeader(method);
+                    getResponseParam(method);
                 }
                 if (method.getName().equals("doDelete")) {
                     methods.add("DELETE");
+                    getParams(method);
+                    getBody(method);
+                    getHeader(method);
+                    getResponseParam(method);
                 }
                 if (method.isAnnotationPresent(ApiAction.class)) {
                     ApiAction apiAction = method.getAnnotation(ApiAction.class);
                     methods.add(apiAction.actionName()+".sub");
+                    getParams(method);
+                    getBody(method);
+                    getHeader(method);
+                    getResponseParam(method);
                 }
-                getParams(method);
-                getBody(method);
-                getHeader(method);
-                getResponseParam(method);
+                
             }
             return methods;
         }
