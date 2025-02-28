@@ -270,67 +270,63 @@
 
         .logo-box {
 
-background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
 
-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
 
-padding: 0.1rem;
+            padding: 0.1rem;
 
-border-radius: 1rem;
+            border-radius: 1rem;
 
-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
-border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
 
-animation: logoPulse 3s ease-in-out infinite;
+            animation: logoPulse 3s ease-in-out infinite;
 
-position: relative;
+            position: relative;
 
-overflow: hidden;
+            overflow: hidden;
 
-}
+        }
 
-/* Logo shine effect */
+        /* Logo shine effect */
 
-.logo-box::after {
+        .logo-box::after {
 
-content: '';
+            content: '';
 
-position: absolute;
+            position: absolute;
 
-top: -50%;
+            top: -50%;
 
-left: -50%;
+            left: -50%;
 
-width: 200%;
+            width: 200%;
 
-height: 200%;
+            height: 200%;
 
-background: linear-gradient(
+            background: linear-gradient(45deg,
 
-45deg,
+                    transparent 0%,
 
-transparent 0%,
+                    rgba(255, 255, 255, 0.1) 50%,
 
-rgba(255, 255, 255, 0.1) 50%,
+                    transparent 100%);
 
-transparent 100%
+            animation: logoShine 3s ease-in-out infinite;
 
-);
+        }
 
-animation: logoShine 3s ease-in-out infinite;
+        .logo-box svg {
 
-}
+            width: 63px;
 
-.logo-box svg{
+            height: 100%;
 
-width: 63px;
+            padding: 5px 5px 0px 5px;
 
-height: 100%;
-
-padding: 5px 5px 0px 5px;
-
-}
+        }
 
         @keyframes logoShine {
             0% {
@@ -428,6 +424,9 @@ padding: 5px 5px 0px 5px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             animation: searchPulse 4s ease-in-out infinite;
+        }
+        .search-box::placeholder{
+           color:white;
         }
 
         @keyframes searchPulse {
@@ -1078,6 +1077,13 @@ padding: 5px 5px 0px 5px;
             display: block;
             animation: slideUp 0.3s ease forwards;
         }
+        .method {
+  margin-bottom: 30px;
+}
+
+.method.expanded {
+  margin-bottom: 0px; 
+}
 
 
         @media (max-width: 768px) {
@@ -1186,7 +1192,7 @@ padding: 5px 5px 0px 5px;
                     </svg>
                 </div>
                 <div class="title-section">
-                    <h1 class="main-title">API Documentation</h1>
+                    <h1 class="main-title">StrideAPI</h1>
                     <p class="subtitle">Explore our endpoints</p>
                 </div>
             </div>
@@ -1221,8 +1227,8 @@ padding: 5px 5px 0px 5px;
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
 
-   <select class="auth-select" id="auth-method-select">
-                <option value = "nothing"> Select the method </option>
+            <select class="auth-select" id="auth-method-select">
+                <option value="nothing"> Select the method </option>
                 <option value="basic">Basic Auth</option>
                 <option value="bearer">Bearer Token</option>
                 <option value="apikey">API Key</option>
@@ -1295,12 +1301,13 @@ padding: 5px 5px 0px 5px;
                     <input type="text" id="oauth-scope" class="form-control" placeholder="Enter scopes">
                 </div>
             </div>
-            
+
 
             <div class="modal-footer">
                 <button class="btn-secondary" id="cancel-auth">Cancel</button>
                 <button class="btn-primary" id="save-auth">Authorize</button>
-            </div>        </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
@@ -1427,30 +1434,30 @@ padding: 5px 5px 0px 5px;
                 }
 
                 if (validateAuthCredentials()) {
-                 
+
 
                     isAuthorized = true;
                     updateAuthorizationStatus();
                     setTimeout(() => {
-                        
+
                         modalOverlay.style.display = 'none';
                     }, 2000);
 
 
-           
+
                 }
-                });
+            });
         }
-        
-        
-  document.addEventListener('DOMContentLoaded', function() {
-            
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
             const saveAuthButton = document.getElementById('save-auth');
             const authMethodSelect = document.getElementById('auth-method-select');
             const authForms = document.querySelectorAll('.auth-form');
             const modalFooter = document.querySelector('.modal-footer');
-            
-            
+
+
             const errorMessage = document.createElement('div');
             errorMessage.classList.add('validation-message', 'error-message');
             errorMessage.style.display = 'none';
@@ -1463,8 +1470,8 @@ padding: 5px 5px 0px 5px;
             errorMessage.style.transition = 'all 0.3s ease-in-out';
             errorMessage.style.transform = 'translateY(-10px)';
             errorMessage.style.opacity = '0';
-            
-            
+
+
             const successMessage = document.createElement('div');
             successMessage.classList.add('validation-message', 'success-message');
             successMessage.style.display = 'none';
@@ -1477,171 +1484,171 @@ padding: 5px 5px 0px 5px;
             successMessage.style.transition = 'all 0.3s ease-in-out';
             successMessage.style.transform = 'translateY(-10px)';
             successMessage.style.opacity = '0';
-            
+
 
             modalFooter.parentNode.insertBefore(errorMessage, modalFooter);
             modalFooter.parentNode.insertBefore(successMessage, modalFooter);
-            
-          
-            authMethodSelect.addEventListener('change', function() {
+
+
+            authMethodSelect.addEventListener('change', function () {
                 const selectedMethod = this.value;
-                
-                
+
+
                 authForms.forEach(form => {
                     form.style.display = 'none';
                 });
-                
-               
+
+
                 if (selectedMethod !== 'nothing') {
                     document.getElementById(`auth-${selectedMethod}`).style.display = 'block';
                 }
-                
-              
+
+
                 hideMessages();
             });
-            
-         
+
+
             function showErrorMessage(message) {
-              
+
                 hideSuccessMessage();
-                
+
                 errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
-                
-              
+
+
                 setTimeout(() => {
                     errorMessage.style.transform = 'translateY(0)';
                     errorMessage.style.opacity = '1';
                 }, 10);
             }
-            
-            
+
+
             function hideErrorMessage() {
                 errorMessage.style.transform = 'translateY(-10px)';
                 errorMessage.style.opacity = '0';
-                
-                
+
+
                 setTimeout(() => {
                     errorMessage.style.display = 'none';
                 }, 300);
             }
-            
-         
+
+
             function showSuccessMessage(message) {
-               
+
                 hideErrorMessage();
-                
+
                 successMessage.textContent = message || 'Authorization Successful';
                 successMessage.style.display = 'block';
-                
-              
+
+
                 setTimeout(() => {
                     successMessage.style.transform = 'translateY(0)';
                     successMessage.style.opacity = '1';
                 }, 10);
-                
-              
+
+
                 setTimeout(() => {
                     hideSuccessMessage();
                 }, 2000);
             }
-            
-           
+
+
             function hideSuccessMessage() {
                 successMessage.style.transform = 'translateY(-10px)';
                 successMessage.style.opacity = '0';
-                
-               
+
+
                 setTimeout(() => {
                     successMessage.style.display = 'none';
                 }, 300);
             }
-            
+
 
             function hideMessages() {
                 hideErrorMessage();
                 hideSuccessMessage();
             }
-            
-          
-            saveAuthButton.addEventListener('click', function() {
+
+
+            saveAuthButton.addEventListener('click', function () {
                 const selectedMethod = authMethodSelect.value;
-                
-               
+
+
                 if (selectedMethod === 'nothing') {
                     showErrorMessage('Please select an authorization method');
                     return;
                 }
-                
-                
+
+
                 let isValid = true;
                 let errorMsg = '';
-                
+
                 switch (selectedMethod) {
                     case 'basic':
                         const username = document.getElementById('basic-username').value.trim();
                         const password = document.getElementById('basic-password').value.trim();
-                        
+
                         if (!username || !password) {
                             isValid = false;
                             errorMsg = 'Please enter both username and password';
                         }
                         break;
-                        
+
                     case 'bearer':
                         const token = document.getElementById('bearer-token').value.trim();
-                        
+
                         if (!token) {
                             isValid = false;
                             errorMsg = 'Please enter a bearer token';
                         }
                         break;
-                        
+
                     case 'apikey':
                         const keyName = document.getElementById('apikey-name').value.trim();
                         const keyValue = document.getElementById('apikey-value').value.trim();
-                        
+
                         if (!keyName || !keyValue) {
                             isValid = false;
                             errorMsg = 'Please enter both API key name and value';
                         }
                         break;
-                        
+
                     case 'jwt':
                         const jwtToken = document.getElementById('jwt-token').value.trim();
-                        
+
                         if (!jwtToken) {
                             isValid = false;
                             errorMsg = 'Please enter a JWT token';
                         }
                         break;
-                        
+
                     case 'oauth2':
                         const clientId = document.getElementById('oauth-client-id').value.trim();
                         const clientSecret = document.getElementById('oauth-client-secret').value.trim();
                         const tokenUrl = document.getElementById('oauth-token-url').value.trim();
-                        
+
                         if (!clientId || !clientSecret || !tokenUrl) {
                             isValid = false;
                             errorMsg = 'Please fill in all required OAuth 2.0 fields';
                         }
                         break;
                 }
-                
+
                 if (!isValid) {
                     showErrorMessage(errorMsg);
                 } else {
                     //isAuthorized = true;
                     updateAuthorizationStatus();
-                    let ele =  document.getElementById('auth-modal-overlay');
+                    let ele = document.getElementById('auth-modal-overlay');
                     showSuccessMessage('Authorization Successful');
                     setTimeout(() => {
-                      ele.style.display = 'none';
+                        ele.style.display = 'none';
                     }, 2000);
-                   
+
                 }
             });
-  
+
             document.getElementById('close-modal').addEventListener('click', hideMessages);
             document.getElementById('cancel-auth').addEventListener('click', hideMessages);
         });
@@ -1697,7 +1704,7 @@ padding: 5px 5px 0px 5px;
         }
 
         function updateAuthorizationStatus() {
-        	const authorizeBtn = document.getElementById('authorize-btn');
+            const authorizeBtn = document.getElementById('authorize-btn');
 
             if (isAuthorized) {
                 if (!authorizeBtn.querySelector('.auth-status')) {
@@ -1747,76 +1754,86 @@ padding: 5px 5px 0px 5px;
 
 
         function createMethodElement(api, method, url, index) {
-            const methodDiv = document.createElement('div');
-            methodDiv.className = 'method';
+      	  const methodDiv = document.createElement('div');
+      	  methodDiv.className = 'method';
 
-            const methodLabel = document.createElement('span');
-            if (method.includes(".")) {
-                method = method.split(".")
-                method = method[0];
-            }
-            methodLabel.className = `method-label ${method.toLowerCase()}`;
+      	  const methodLabel = document.createElement('span');
+      	  if (method.includes(".")) {
+      	    method = method.split(".")[0];
+      	  }
+      	  methodLabel.className = `method-label ${method.toLowerCase()}`;
 
-            if (method == "GET") {
-                methodDiv.classList.add("get-bg");
-            }
-            else if (method == "POST") {
-                methodDiv.classList.add("post-bg");
-            }
-            else if (method == "PUT") {
-                methodDiv.classList.add("put-bg");
-            }
-            else if (method == "DELETE") {
-                methodDiv.classList.add("delete-bg");
-            }
-            else if (method == "PATCH") {
-                methodDiv.classList.add("patch-bg");
-            }
+      	  if (method === "GET") {
+      	    methodDiv.classList.add("get-bg");
+      	  } else if (method === "POST") {
+      	    methodDiv.classList.add("post-bg");
+      	  } else if (method === "PUT") {
+      	    methodDiv.classList.add("put-bg");
+      	  } else if (method === "DELETE") {
+      	    methodDiv.classList.add("delete-bg");
+      	  } else if (method === "PATCH") {
+      	    methodDiv.classList.add("patch-bg");
+      	  }
 
+      	  methodLabel.textContent = method;
 
-            methodLabel.textContent = method;
+      	  const urlSpan = document.createElement('span');
+      	  urlSpan.className = 'endpoint-url';
+      	  urlSpan.textContent = url;
 
-            const urlSpan = document.createElement('span');
-            urlSpan.className = 'endpoint-url';
-            urlSpan.textContent = url;
+      	  methodDiv.appendChild(methodLabel);
+      	  methodDiv.appendChild(urlSpan);
 
-            /*const descSpan = document.createElement('span');
-            descSpan.className = 'endpoint-description';
-            descSpan.textContent = description;*/
+      	  const content = document.createElement('div');
+      	  content.className = 'endpoint-content';
+      	  content.style.display = 'none';
 
-            methodDiv.appendChild(methodLabel);
-            methodDiv.appendChild(urlSpan);
-            /*methodDiv.appendChild(descSpan);*/
+      	  const tryButton = document.createElement('button');
+      	  tryButton.className = 'try-out';
+      	  tryButton.textContent = 'Test';
 
-            const content = document.createElement('div');
-            content.className = 'endpoint-content';
+      	  const responseBox = document.createElement('pre');
+      	  responseBox.className = 'response-box';
 
-            const tryButton = document.createElement('button');
-            tryButton.className = 'try-out';
-            tryButton.textContent = 'Test';
+      	  content.appendChild(responseBox);
 
-            const responseBox = document.createElement('pre');
-            responseBox.className = 'response-box';
+      	  methodDiv.addEventListener('click', (event) => {
+      	    event.stopPropagation(); 
 
+      	    const isActive = content.classList.contains('active');
 
-            content.appendChild(responseBox);
+      	  
+      	    document.querySelectorAll('.endpoint-content.active').forEach(el => {
+      	      el.style.display = 'none';
+      	      el.classList.remove('active');
+      	    });
 
-            methodDiv.addEventListener('click', () => {
-                const allContents = document.querySelectorAll('.endpoint-content');
-                allContents.forEach(el => el.classList.remove('active'));
-                content.classList.add('active');
-                initializeRequest(api, method, index);
-                content.appendChild(tryButton);
-                initializeResponse(api, method, index);
+      	    document.querySelectorAll('.method.expanded').forEach(el => {
+      	      el.classList.remove('expanded'); 
+      	    });
 
+      	   
+      	    if (isActive) {
+      	      content.style.display = 'none';
+      	      content.classList.remove('active');
+      	      methodDiv.classList.remove('expanded'); 
+      	    } else {
+      	      content.style.display = 'block';
+      	      content.classList.add('active');
+      	      methodDiv.classList.add('expanded'); 
 
-            });
+      	      if (!content.contains(tryButton)) {
+      	        initializeRequest(api, method, index);
+      	        content.appendChild(tryButton);
+      	        initializeResponse(api, method, index);
+      	      }
+      	    }
+      	  });
 
+      	  tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
 
-            tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
-
-            return [methodDiv, content];
-        }
+      	  return [methodDiv, content];
+      	}
 
         function toggleTheme() {
             const body = document.body;
@@ -1879,22 +1896,18 @@ padding: 5px 5px 0px 5px;
                             if (api.requestBodyType[index][i] !== undefined) {
                                 className.appendChild(lineBreak);
 
-                                // Create the container for the response area
                                 var responseArea = document.createElement("div");
                                 responseArea.className = "textContainer";
 
-                                // Create and style the parameter label
                                 var dataName = document.createElement("p");
                                 dataName.style.fontSize = "20px";
-                                dataName.innerText = api.requestBodyName[index][i] + " : ";
+                                dataName.innerText = api.requestBodyName[index][i] + ": ";
                                 responseArea.appendChild(dataName);
 
-                                // Create the container for Ace Editor
                                 var container = document.createElement("div");
-                                let uniqueId = "api-editor-" + idValue; // Ensure unique ID
+                                let uniqueId = "api-editor-" + idValue;
                                 container.className = "parameter" + idValue;
-                                container.id = uniqueId; // Assign the unique ID for Ace to recognize
-
+                                container.id = uniqueId;
                                 container.style.width = "100%";
                                 container.style.height = "fit-content";
                                 container.style.minHeight = "100px";
@@ -1903,9 +1916,7 @@ padding: 5px 5px 0px 5px;
                                 responseArea.appendChild(container);
                                 className.appendChild(responseArea);
 
-                                // Initialize Ace Editor
                                 editor = ace.edit(uniqueId);
-                                //editor.setTheme("ace/theme/monokai");
                                 editor.setTheme("ace/theme/dracula");
                                 editor.session.setMode("ace/mode/json");
                                 editor.setFontSize(16);
@@ -1924,24 +1935,28 @@ padding: 5px 5px 0px 5px;
         }
 
         function initializeResponse(api, method, index) {
+        	var dropdown="";
             var body = "";
             var dropdownValue = "JSON";
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
             var responseArea = null;
-            dropdown = document.createElement("select");
 
 
-            let options = ["JSON", "XML"];
-            options.forEach((optionText) => {
-                let option = document.createElement("option");
-                option.value = optionText;
-                option.textContent = optionText;
-                dropdown.appendChild(option);
-                dropdown.id = "dropDown";
-            });
+
+
             curEndPointContent.forEach((className) => {
                 if (className.classList.contains('active')) {
                     for (var i = 0; i < api.response[index].length; i++) {
+                        dropdown = document.createElement("select");
+                        let options = ["JSON", "XML"];
+                        options.forEach((optionText) => {
+                            let option = document.createElement("option");
+                            option.value = optionText;
+                            option.textContent = optionText;
+                            dropdown.appendChild(option);
+                            
+                        });
+                        dropdown.id = "dropDown"+i;
                         var lineBreak = document.createElement("br");
                         responseArea = document.createElement("div");
                         responseArea.className = "responseContainer";
@@ -1985,7 +2000,7 @@ padding: 5px 5px 0px 5px;
                         examples.className = "responseTextSize";
                         let container = document.createElement("div");
                         container.className = "editor-container";
-                        container.id = "api-editor" + i; // Ensure the ID is correctly set
+                        container.id = "api-editor" + i;
                         container.style.width = "100%";
                         container.style.width = "100%";
                         container.style.minHeight = "50px";
@@ -2011,9 +2026,9 @@ padding: 5px 5px 0px 5px;
                             responseArea.appendChild(lineBreak);
                         }
                         if (api.response[index][i].Headers != undefined) {
-                        	let container = document.createElement("div");
+                            let container = document.createElement("div");
                             container.className = "headerEditor-container";
-                            container.id = "header-editor"; // Ensure the ID is correctly set
+                            container.id = "header-editor";
                             container.style.width = "100%";
                             container.style.minHeight = "50px";
                             container.style.maxHeight = "none";
@@ -2026,15 +2041,15 @@ padding: 5px 5px 0px 5px;
                             responseArea.appendChild(curlContainer);
                             responseArea.appendChild(lineBreak);
                         }
-                        if(api.response[index][i].responseUrl != undefined){
-                        	responseArea.appendChild(lineBreak);
-                        	responseArea.appendChild(url);
+                        if (api.response[index][i].responseUrl != undefined) {
+                            responseArea.appendChild(lineBreak);
+                            responseArea.appendChild(url);
                             responseArea.appendChild(urlContainer);
                             responseArea.appendChild(lineBreak);
                         }
                         if (api.response[index][i].Examples != undefined) {
                             if (isValidJson(api.response[index][i].Examples)) {
-                            	responseArea.appendChild(lineBreak);
+                                responseArea.appendChild(lineBreak);
                                 responseArea.appendChild(dropdown);
                                 responseArea.appendChild(lineBreak);
                                 body = JSON.parse(api.response[index][i].Examples);
@@ -2052,47 +2067,46 @@ padding: 5px 5px 0px 5px;
                             });
 
                             curlEditorsss.session.setMode("ace/mode/text");
-                            curlEditorsss.setFontSize(16); // Optional: Set font size
+                            curlEditorsss.setFontSize(16);
                             curlEditorsss.setReadOnly(true);
                             curlEditorsss.setValue(api.response[index][i].curl);
                         }
                         console.log(JSON.stringify(api.response[index][i], null, 2))
-                        if(api.response[index][i].responseUrl != undefined){
-                        	urlEditorsss = ace.edit("url-editor" + i);
+                        if (api.response[index][i].responseUrl != undefined) {
+                            urlEditorsss = ace.edit("url-editor" + i);
                             urlEditorsss.setTheme("ace/theme/dracula");
                             urlEditorsss.setOptions({
                                 maxLines: Infinity
                             });
 
                             urlEditorsss.session.setMode("ace/mode/text");
-                            urlEditorsss.setFontSize(16); // Optional: Set font size
+                            urlEditorsss.setFontSize(16);
                             urlEditorsss.setReadOnly(true);
                             urlEditorsss.setValue(api.response[index][i].responseUrl);
                         }
-                        if(api.response[index][i].Headers != undefined){
-                            headerEditors=ace.edit("header-editor");
+                        if (api.response[index][i].Headers != undefined) {
+                            headerEditors = ace.edit("header-editor");
                             headerEditors.setTheme("ace/theme/dracula");
                             headerEditors.setOptions({
                                 maxLines: Infinity
                             });
                             headerEditors.session.setMode("ace/mode/*");
-                            headerEditors.setFontSize(16); 
+                            headerEditors.setFontSize(16);
                             headerEditors.setReadOnly(true);
-                            let allHeaders="";
+                            let allHeaders = "";
                             response.headers.forEach((value, name) => {
                                 allHeaders += (`${name}: ${value}\n`);
                             });
-                            headerEditors.setValue(allHeaders,1);}
+                            headerEditors.setValue(allHeaders, 1);
+                        }
                         if (api.response[index][i].Examples != undefined) {
-                            // Initialize Ace Editor after appending
                             editorsss = ace.edit("api-editor" + i);
-                            // editorsss.setTheme("ace/theme/monokai");
                             editorsss.setTheme("ace/theme/dracula");
                             editorsss.setOptions({
                                 maxLines: Infinity
                             });
                             editorsss.session.setMode("ace/mode/json");
-                            editorsss.setFontSize(16); // Optional: Set font size
+                            editorsss.setFontSize(16);
                             editorsss.setReadOnly(true);
                         }
                         var parsedJSON = ""
@@ -2112,15 +2126,18 @@ padding: 5px 5px 0px 5px;
 
 
 
-            dropdown.addEventListener("change", function () {
-                dropdownVal = this.value;
+            document.addEventListener("change", function (event) {
+                dropdownVal = event.target.value;
+                let id=event.target.id.split("");
+                id=id[id.length-1];
+                console.log(dropdown.id);
                 if (dropdownVal == "XML") {
-                    var dropEdit = document.querySelector(".editor-container");
+                    var dropEdit = document.getElementById("api-editor"+id);
                     var edit = ace.edit(dropEdit.id);
                     edit.setValue(jsonToXml(body))
                 }
                 else {
-                    var dropEdit = document.querySelector(".editor-container");
+                	var dropEdit = document.getElementById("api-editor"+id);
                     var edit = ace.edit(dropEdit.id);
                     edit.setValue(JSON.stringify(body, null, 2));
                 }
@@ -2187,14 +2204,14 @@ padding: 5px 5px 0px 5px;
             var newString = "";
             for (var i = 0; i < string.length; i++) {
                 if (string[0] == "/" && i == 0) {
-                	continue;
-                     
+                    continue;
+
                 }
-                else if((string[i]=="/" && string[i+1]=="*") || (string[i]=="*")){
-                	continue
+                else if ((string[i] == "/" && string[i + 1] == "*") || (string[i] == "*")) {
+                    continue
                 }
-                else{
-                	newString += string[i];
+                else {
+                    newString += string[i];
                 }
             }
             return newString;
@@ -2232,7 +2249,6 @@ padding: 5px 5px 0px 5px;
 
 
 
-                // Add request body if method is POST, PUT, PATCH, or DELETE
                 if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
                     const requestBody = getRequestBody(api, index, method, bodyValue);
                     if (requestBody) {
@@ -2241,11 +2257,10 @@ padding: 5px 5px 0px 5px;
                         }
                         options.body = requestBody;
 
-                    } 
+                    }
                 }
                 const dataOfAuth = applyAuthToRequest(options.headers);
                 options.headers = dataOfAuth.headers;
-                // Add request parameters if provided
                 var fullUrl = "";
                 const requestParams = getRequestParam(api, index, urlParam);
                 if (requestParams) {
@@ -2272,7 +2287,7 @@ padding: 5px 5px 0px 5px;
                         check: "response Check"
                     };
                     api.response[index] = [responseObject];
-                    updateResponse(api,api.response[index][0], method, index)
+                    updateResponse(api, api.response[index][0], method, index)
                     return;
                 }
                 const contentType = response.headers.get("content-type");
@@ -2288,16 +2303,16 @@ padding: 5px 5px 0px 5px;
                 if (result.includes("<!doctype html>")) {
                     let doc = parser.parseFromString(result, "text/html");
                     result = doc.querySelector("pre")
-                    if(result){
-                    	result=result.innerText;
+                    if (result) {
+                        result = result.innerText;
                     }
-                    if (result==null) {
-                    	var resultString="";
+                    if (result == null) {
+                        var resultString = "";
                         result = doc.querySelectorAll("p")
-                        for(var i=0;i<result.length-1;i++){
-                        	resultString+=" "+result[i].innerText;
+                        for (var i = 0; i < result.length - 1; i++) {
+                            resultString += " " + result[i].innerText;
                         }
-                        result=resultString;
+                        result = resultString;
                     }
                     else {
                         var newResult = "";
@@ -2336,7 +2351,7 @@ padding: 5px 5px 0px 5px;
                     curl: createCurl(api, method, index, options.body, options.headers, fullUrl)
                 };
                 api.response[index] = [responseObject];
-                updateResponse(api,api.response[index][0], method, index,fullUrl)
+                updateResponse(api, api.response[index][0], method, index, fullUrl)
             } catch (error) {
                 let responseObject = {
                     Deprecated: false,
@@ -2347,18 +2362,17 @@ padding: 5px 5px 0px 5px;
                     check: "response Check"
                 };
                 api.response[index] = [responseObject];
-                updateResponse(api,api.response[index][0], method, index)
+                updateResponse(api, api.response[index][0], method, index)
                 return;
             }
             finally {
             }
         }
 
-        function updateResponse(jsonApi,api, method, index,fullUrl){
+        function updateResponse(jsonApi, api, method, index, fullUrl) {
             let dropdown = document.createElement("select");
             var body = "";
             var dropdownVal = "JSON";
-            // Add options
             let options = ["JSON", "XML"];
             options.forEach((optionText) => {
                 let option = document.createElement("option");
@@ -2427,20 +2441,20 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(lineBreak);
             }
             if (api.Headers != undefined) {
-          	  let container = document.createElement("div");
+                let container = document.createElement("div");
                 container.className = "headerEditor-container";
-                container.id = "header-editor"; // Ensure the ID is correctly set
+                container.id = "header-editor";
                 container.style.width = "100%";
                 container.style.minHeight = "50px";
                 container.style.maxHeight = "none";
-              responseArea.appendChild(headers);
-              responseArea.appendChild(container);
-              responseArea.appendChild(lineBreak);
-          }
+                responseArea.appendChild(headers);
+                responseArea.appendChild(container);
+                responseArea.appendChild(lineBreak);
+            }
             if (api.curl != undefined) {
                 let container = document.createElement("div");
                 container.className = "curlEditor-container";
-                container.id = "curl-editor"; // Ensure the ID is correctly set
+                container.id = "curl-editor";
                 container.style.width = "100%";
                 container.style.minHeight = "50px";
                 container.style.maxHeight = "none";
@@ -2448,16 +2462,16 @@ padding: 5px 5px 0px 5px;
                 curl.className = "responseTextSize";
                 curl.innerText = "cURL : "
                 responseArea.appendChild(curl);
-                responseArea.appendChild(container); // Append container to the response area
+                responseArea.appendChild(container);
                 responseArea.appendChild(lineBreak);
             }
-            var finalUrl=""
-            if(jsonApi.url!= undefined){
-            	var urlBase = window.location.origin;
-                finalUrl = urlBase + "/" + jsonApi.ProjectName+"/"+fullUrl;
+            var finalUrl = ""
+            if (jsonApi.url != undefined) {
+                var urlBase = window.location.origin;
+                finalUrl = urlBase + "/" + jsonApi.ProjectName + "/" + fullUrl;
                 let container = document.createElement("div");
                 container.className = "urlEditor-container";
-                container.id = "url-editor"; // Ensure the ID is correctly set
+                container.id = "url-editor";
                 container.style.width = "100%";
                 container.style.minHeight = "50px";
                 container.style.maxHeight = "none";
@@ -2467,8 +2481,8 @@ padding: 5px 5px 0px 5px;
                 responseArea.appendChild(lineBreak);
                 responseArea.appendChild(url);
                 responseArea.appendChild(container);
-                api.responseUrl=finalUrl;
-                
+                api.responseUrl = finalUrl;
+
             }
             if (api.Examples != undefined) {
                 if (isValidJson(api.Examples)) {
@@ -2479,7 +2493,7 @@ padding: 5px 5px 0px 5px;
                 }
                 let container = document.createElement("div");
                 container.className = "editor-container";
-                container.id = "api-editor"; // Ensure the ID is correctly set
+                container.id = "api-editor";
                 container.style.width = "100%";
                 container.style.minHeight = "50px";
                 container.style.maxHeight = "none";
@@ -2487,60 +2501,59 @@ padding: 5px 5px 0px 5px;
                 examples.className = "responseTextSize";
                 examples.innerText = "Response : "
                 responseArea.appendChild(examples);
-                responseArea.appendChild(container); // Append container to the response area
+                responseArea.appendChild(container);
             }
 
             responseBox.appendChild(responseArea);
-            if(api.curl != undefined){
-            curlEditorsss = ace.edit("curl-editor");
-            curlEditorsss.setTheme("ace/theme/dracula");
-            curlEditorsss.setOptions({
-                maxLines: Infinity
-            });
+            if (api.curl != undefined) {
+                curlEditorsss = ace.edit("curl-editor");
+                curlEditorsss.setTheme("ace/theme/dracula");
+                curlEditorsss.setOptions({
+                    maxLines: Infinity
+                });
 
-            curlEditorsss.session.setMode("ace/mode/text");
-            curlEditorsss.setFontSize(16); // Optional: Set font size
-            curlEditorsss.setReadOnly(true);
-            curlEditorsss.setValue(api.curl);}
-            if(jsonApi.url != undefined){
-            	// Initialize Ace Editor after appending
+                curlEditorsss.session.setMode("ace/mode/text");
+                curlEditorsss.setFontSize(16);
+                curlEditorsss.setReadOnly(true);
+                curlEditorsss.setValue(api.curl);
+            }
+            if (jsonApi.url != undefined) {
                 urlEditorsss = ace.edit("url-editor");
-                // editorsss.setTheme("ace/theme/monokai");
                 urlEditorsss.setTheme("ace/theme/dracula");
                 urlEditorsss.setOptions({
                     maxLines: Infinity
                 });
                 urlEditorsss.session.setMode("ace/mode/text");
-                urlEditorsss.setFontSize(16); // Optional: Set font size
+                urlEditorsss.setFontSize(16);
                 urlEditorsss.setReadOnly(true);
                 urlEditorsss.setValue(finalUrl, 1);
             }
-            if(api.Examples){
-            // Initialize Ace Editor after appending
-            editorsss = ace.edit("api-editor");
-            // editorsss.setTheme("ace/theme/monokai");
-            editorsss.setTheme("ace/theme/dracula");
-            editorsss.setOptions({
-                maxLines: Infinity
-            });
-            editorsss.session.setMode("ace/mode/json");
-            editorsss.setFontSize(16); // Optional: Set font size
-            editorsss.setReadOnly(true);
-            editorsss.setValue(api.Examples, 1);}
-            if(api.Headers != undefined){
-            headerEditors=ace.edit("header-editor");
-            headerEditors.setTheme("ace/theme/dracula");
-            headerEditors.setOptions({
-                maxLines: Infinity
-            });
-            headerEditors.session.setMode("ace/mode/*");
-            headerEditors.setFontSize(16); 
-            headerEditors.setReadOnly(true);
-            let allHeaders="";
-            response.headers.forEach((value, name) => {
-                allHeaders += (`${name}: ${value}\n`);
-            });
-            headerEditors.setValue(allHeaders,1);}
+            if (api.Examples) {
+                editorsss = ace.edit("api-editor");
+                editorsss.setTheme("ace/theme/dracula");
+                editorsss.setOptions({
+                    maxLines: Infinity
+                });
+                editorsss.session.setMode("ace/mode/json");
+                editorsss.setFontSize(16);
+                editorsss.setReadOnly(true);
+                editorsss.setValue(api.Examples, 1);
+            }
+            if (api.Headers != undefined) {
+                headerEditors = ace.edit("header-editor");
+                headerEditors.setTheme("ace/theme/dracula");
+                headerEditors.setOptions({
+                    maxLines: Infinity
+                });
+                headerEditors.session.setMode("ace/mode/*");
+                headerEditors.setFontSize(16);
+                headerEditors.setReadOnly(true);
+                let allHeaders = "";
+                response.headers.forEach((value, name) => {
+                    allHeaders += (`${name}: ${value}\n`);
+                });
+                headerEditors.setValue(allHeaders, 1);
+            }
 
 
             dropdown.addEventListener("change", function () {
@@ -2601,6 +2614,23 @@ padding: 5px 5px 0px 5px;
 
             return `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}>\n${convert(obj, 1)}</${rootName}>`;
         }
+        document.querySelector(".search-box").addEventListener("input", function () {
+            let searchValue = this.value.toLowerCase().trim();
+
+            document.querySelectorAll(".endpoint-url").forEach(endpoint => {
+                let parentDiv = endpoint.parentElement;
+
+                if (endpoint.textContent.toLowerCase().includes(searchValue)) {
+                    parentDiv.style.display = "block";
+                    parentDiv.parentElement.style.display = "block";
+
+                } else {
+                    parentDiv.style.display = "none";
+                    parentDiv.parentElement.style.display = "none";
+
+                }
+            });
+        });
     </script>
 </body>
 
