@@ -1423,7 +1423,6 @@
                     case 'apikey':
                         authData.credentials.name = document.getElementById('apikey-name').value;
                         authData.credentials.value = document.getElementById('apikey-value').value;
-                        authData.credentials.location = document.getElementById('apikey-location').value;
                         break;
                     case 'jwt':
                         authData.credentials.token = document.getElementById('jwt-token').value;
@@ -1761,9 +1760,8 @@
                     break;
             }
 
-            console.log(headers);
-            console.log(params);
-
+            console.log("headers"+headers);
+          
             return { headers };
         }
 
