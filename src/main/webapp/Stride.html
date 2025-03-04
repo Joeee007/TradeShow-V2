@@ -425,8 +425,9 @@
             transition: all 0.3s ease;
             animation: searchPulse 4s ease-in-out infinite;
         }
-        .search-box::placeholder{
-           color:white;
+
+        .search-box::placeholder {
+            color: white;
         }
 
         @keyframes searchPulse {
@@ -1073,17 +1074,39 @@
             transform: translateY(10px);
         }
 
+        .openapi-spec {
+            margin-top: 20px;
+            padding: 10px;
+            background: #E8E8E8;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .openapi-heading {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .openapi-content {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
         .response-box.active {
             display: block;
             animation: slideUp 0.3s ease forwards;
         }
-        .method {
-  margin-bottom: 30px;
-}
 
-.method.expanded {
-  margin-bottom: 0px; 
-}
+        .method {
+            margin-bottom: 30px;
+        }
+
+        .method.expanded {
+            margin-bottom: 0px;
+        }
 
 
         @media (max-width: 768px) {
@@ -1264,13 +1287,7 @@
                     <label for="apikey-value">Key Value</label>
                     <input type="text" id="apikey-value" class="form-control" placeholder="Enter API key value">
                 </div>
-                <div class="form-group">
-                    <label for="apikey-location">Location</label>
-                    <select id="apikey-location" class="form-control">
-                        <option value="header">Header</option>
-                        <option value="query">Query Parameter</option>
-                    </select>
-                </div>
+               
             </div>
 
 
@@ -1318,6 +1335,7 @@
         let editorsss;
         let curlEditorsss;
         let urlEditorsss;
+        let openApiEditorsss;
         var response = null;
         var apis = null;
         let authData = {
@@ -1713,14 +1731,13 @@
             }
         }
 
-        function applyAuthToRequest(requestHeaders, requestParams) {
+        function applyAuthToRequest(requestHeaders) {
             if (!isAuthorized) {
-                return { headers: requestHeaders, params: requestParams };
+                return { headers: requestHeaders};
             }
 
             const headers = { ...requestHeaders };
-            let params = { ...requestParams };
-
+           
             switch (authData.method) {
                 case 'basic':
                     const base64Credentials = btoa(`${authData.credentials.username}:${authData.credentials.password}`);
@@ -1729,16 +1746,14 @@
 
                 case 'bearer':
                 case 'jwt':
-                    console.log("Hiiiiiiiiiiiiiiiiiiii");
+                 
                     headers['Authorization'] = `Bearer ${authData.credentials.token}`;
                     break;
 
                 case 'apikey':
-                    if (authData.credentials.location === 'header') {
+                   
                         headers[authData.credentials.name] = authData.credentials.value;
-                    } else {
-                        params[authData.credentials.name] = authData.credentials.value;
-                    }
+                    
                     break;
 
                 case 'oauth2':
@@ -1749,91 +1764,92 @@
             console.log(headers);
             console.log(params);
 
-            return params && Object.keys(params).length > 0 ? { headers, params } : { headers };
+            return { headers };
         }
 
 
+
         function createMethodElement(api, method, url, index) {
-      	  const methodDiv = document.createElement('div');
-      	  methodDiv.className = 'method';
+            const methodDiv = document.createElement('div');
+            methodDiv.className = 'method';
 
-      	  const methodLabel = document.createElement('span');
-      	  if (method.includes(".")) {
-      	    method = method.split(".")[0];
-      	  }
-      	  methodLabel.className = `method-label ${method.toLowerCase()}`;
+            const methodLabel = document.createElement('span');
+            if (method.includes(".")) {
+                method = method.split(".")[0];
+            }
+            methodLabel.className = `method-label ${method.toLowerCase()}`;
 
-      	  if (method === "GET") {
-      	    methodDiv.classList.add("get-bg");
-      	  } else if (method === "POST") {
-      	    methodDiv.classList.add("post-bg");
-      	  } else if (method === "PUT") {
-      	    methodDiv.classList.add("put-bg");
-      	  } else if (method === "DELETE") {
-      	    methodDiv.classList.add("delete-bg");
-      	  } else if (method === "PATCH") {
-      	    methodDiv.classList.add("patch-bg");
-      	  }
+            if (method === "GET") {
+                methodDiv.classList.add("get-bg");
+            } else if (method === "POST") {
+                methodDiv.classList.add("post-bg");
+            } else if (method === "PUT") {
+                methodDiv.classList.add("put-bg");
+            } else if (method === "DELETE") {
+                methodDiv.classList.add("delete-bg");
+            } else if (method === "PATCH") {
+                methodDiv.classList.add("patch-bg");
+            }
 
-      	  methodLabel.textContent = method;
+            methodLabel.textContent = method;
 
-      	  const urlSpan = document.createElement('span');
-      	  urlSpan.className = 'endpoint-url';
-      	  urlSpan.textContent = url;
+            const urlSpan = document.createElement('span');
+            urlSpan.className = 'endpoint-url';
+            urlSpan.textContent = url;
 
-      	  methodDiv.appendChild(methodLabel);
-      	  methodDiv.appendChild(urlSpan);
+            methodDiv.appendChild(methodLabel);
+            methodDiv.appendChild(urlSpan);
 
-      	  const content = document.createElement('div');
-      	  content.className = 'endpoint-content';
-      	  content.style.display = 'none';
+            const content = document.createElement('div');
+            content.className = 'endpoint-content';
+            content.style.display = 'none';
 
-      	  const tryButton = document.createElement('button');
-      	  tryButton.className = 'try-out';
-      	  tryButton.textContent = 'Test';
+            const tryButton = document.createElement('button');
+            tryButton.className = 'try-out';
+            tryButton.textContent = 'Test';
 
-      	  const responseBox = document.createElement('pre');
-      	  responseBox.className = 'response-box';
+            const responseBox = document.createElement('pre');
+            responseBox.className = 'response-box';
 
-      	  content.appendChild(responseBox);
+            content.appendChild(responseBox);
 
-      	  methodDiv.addEventListener('click', (event) => {
-      	    event.stopPropagation(); 
+            methodDiv.addEventListener('click', (event) => {
+                event.stopPropagation();
 
-      	    const isActive = content.classList.contains('active');
+                const isActive = content.classList.contains('active');
 
-      	  
-      	    document.querySelectorAll('.endpoint-content.active').forEach(el => {
-      	      el.style.display = 'none';
-      	      el.classList.remove('active');
-      	    });
 
-      	    document.querySelectorAll('.method.expanded').forEach(el => {
-      	      el.classList.remove('expanded'); 
-      	    });
+                document.querySelectorAll('.endpoint-content.active').forEach(el => {
+                    el.style.display = 'none';
+                    el.classList.remove('active');
+                });
 
-      	   
-      	    if (isActive) {
-      	      content.style.display = 'none';
-      	      content.classList.remove('active');
-      	      methodDiv.classList.remove('expanded'); 
-      	    } else {
-      	      content.style.display = 'block';
-      	      content.classList.add('active');
-      	      methodDiv.classList.add('expanded'); 
+                document.querySelectorAll('.method.expanded').forEach(el => {
+                    el.classList.remove('expanded');
+                });
 
-      	      if (!content.contains(tryButton)) {
-      	        initializeRequest(api, method, index);
-      	        content.appendChild(tryButton);
-      	        initializeResponse(api, method, index);
-      	      }
-      	    }
-      	  });
 
-      	  tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
+                if (isActive) {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                    methodDiv.classList.remove('expanded');
+                } else {
+                    content.style.display = 'block';
+                    content.classList.add('active');
+                    methodDiv.classList.add('expanded');
 
-      	  return [methodDiv, content];
-      	}
+                    if (!content.contains(tryButton)) {
+                        initializeRequest(api, method, index);
+                        content.appendChild(tryButton);
+                        initializeResponse(api, method, index);
+                    }
+                }
+            });
+
+            tryButton.addEventListener('click', () => fetchAnswer(content, tryButton, api, method, index));
+
+            return [methodDiv, content];
+        }
 
         function toggleTheme() {
             const body = document.body;
@@ -1843,6 +1859,7 @@
 
         function initializeUI() {
             const container = document.getElementById('endpoints-container');
+
             apis.forEach(api => {
                 const endpoint = document.createElement('div');
                 endpoint.className = 'endpoint';
@@ -1854,6 +1871,43 @@
                 });
 
                 container.appendChild(endpoint);
+            });
+
+
+            const openApiDiv = document.createElement('div');
+            openApiDiv.className = 'openapi-spec';
+
+            const heading = document.createElement('h3');
+            heading.textContent = 'OpenAPI Spec';
+            heading.className = 'openapi-heading';
+
+            const content = document.createElement('div');
+            content.className = 'openapi-content';
+            content.style.display = 'none';
+
+            const specText = document.createElement('pre');
+            specText.className = 'spec-text';
+            specText.textContent = '';
+
+            content.appendChild(specText);
+            openApiDiv.appendChild(heading);
+            openApiDiv.appendChild(content);
+            container.appendChild(openApiDiv);
+
+
+            heading.addEventListener('click', () => {
+            	const parentDiv = document.querySelector('.openapi-content');
+            	if(parentDiv.style.display=="none"){
+            		content.style.display = 'block'
+            		fetchOpenApi(parentDiv);
+            	}
+                
+                else{
+                	parentDiv.style.display="none"
+                	parentDiv.innerHTML="";
+                	console.log(parentDiv);
+                    
+                }
             });
         }
         function initializeRequest(api, method, index) {
@@ -1935,7 +1989,7 @@
         }
 
         function initializeResponse(api, method, index) {
-        	var dropdown="";
+            var dropdown = "";
             var body = "";
             var dropdownValue = "JSON";
             var curEndPointContent = document.querySelectorAll('.endpoint-content');
@@ -1954,9 +2008,9 @@
                             option.value = optionText;
                             option.textContent = optionText;
                             dropdown.appendChild(option);
-                            
+
                         });
-                        dropdown.id = "dropDown"+i;
+                        dropdown.id = "dropDown" + i;
                         var lineBreak = document.createElement("br");
                         responseArea = document.createElement("div");
                         responseArea.className = "responseContainer";
@@ -2128,16 +2182,16 @@
 
             document.addEventListener("change", function (event) {
                 dropdownVal = event.target.value;
-                let id=event.target.id.split("");
-                id=id[id.length-1];
+                let id = event.target.id.split("");
+                id = id[id.length - 1];
                 console.log(dropdown.id);
                 if (dropdownVal == "XML") {
-                    var dropEdit = document.getElementById("api-editor"+id);
+                    var dropEdit = document.getElementById("api-editor" + id);
                     var edit = ace.edit(dropEdit.id);
                     edit.setValue(jsonToXml(body))
                 }
                 else {
-                	var dropEdit = document.getElementById("api-editor"+id);
+                    var dropEdit = document.getElementById("api-editor" + id);
                     var edit = ace.edit(dropEdit.id);
                     edit.setValue(JSON.stringify(body, null, 2));
                 }
@@ -2631,6 +2685,30 @@
                 }
             });
         });
+        
+        
+        async function fetchOpenApi(parentDiv){
+        	var openApiResponse = await fetch("jsonCon?action=apispec");
+            var openApi = await openApiResponse.json();
+            console.log(openApi);
+            let container = document.createElement("div");
+            container.className = "openapiEditor-container";
+            container.id = "openapi-editor";
+            container.style.width = "100%";
+            container.style.minHeight = "50px";
+            container.style.maxHeight = "none";
+            parentDiv.appendChild(container);
+            openApiEditorsss = ace.edit("openapi-editor");
+            openApiEditorsss.setTheme("ace/theme/dracula");
+            openApiEditorsss.setOptions({
+                maxLines: Infinity
+            });
+
+            openApiEditorsss.session.setMode("ace/mode/json");
+            openApiEditorsss.setFontSize(16);
+            openApiEditorsss.setReadOnly(true);
+            openApiEditorsss.setValue(JSON.stringify(openApi,null,2));
+        }
     </script>
 </body>
 

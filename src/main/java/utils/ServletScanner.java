@@ -248,7 +248,99 @@ public class ServletScanner {
 		}
         return fieldList;
     }
+    public JSONObject generateOpenApiSpec() {
+        JSONObject openApi = new JSONObject();
+        openApi.put("openapi", "3.0.0");
 
+        // Info Object
+        JSONObject info = new JSONObject();
+        info.put("title", ConfigLoader.getProjectName());
+        info.put("version", "1.0.0");
+        openApi.put("info", info);
+
+        // Paths Object
+        JSONObject paths = new JSONObject();
+        JSONArray endpoints = scanServlets();
+
+        for (int i = 0; i < endpoints.length(); i++) {
+            JSONObject endpoint = endpoints.getJSONObject(i);
+            String url = endpoint.getString("url");
+            JSONObject pathItem = new JSONObject();
+
+            JSONArray methods = endpoint.getJSONArray("methods");
+            for (int j = 0; j < methods.length(); j++) {
+                String method = methods.getString(j).toLowerCase();
+                JSONObject operation = new JSONObject();
+                operation.put("summary", endpoint.getString("name"));
+
+                // Parameters
+                JSONArray parameters = new JSONArray();
+                JSONArray requestDataNames = endpoint.getJSONArray("requestDataName");
+                JSONArray requestDataTypes = endpoint.getJSONArray("requestDataType");
+                for (int k = 0; k < requestDataNames.length(); k++) {
+                    JSONArray names = requestDataNames.getJSONArray(k);
+                    JSONArray types = requestDataTypes.getJSONArray(k);
+                    for (int l = 0; l < names.length(); l++) {
+                        JSONObject parameter = new JSONObject();
+                        parameter.put("name", names.getString(l));
+                        parameter.put("in", "query");
+                        parameter.put("schema", new JSONObject().put("type", types.getString(l)));
+                        parameters.put(parameter);
+                    }
+                }
+
+                // Request Body
+                if (method.equals("post") || method.equals("put")) {
+                    JSONObject requestBody = new JSONObject();
+                    JSONObject content = new JSONObject();
+                    JSONObject schema = new JSONObject();
+                    JSONArray requestBodyNames = endpoint.getJSONArray("requestBodyName");
+                    JSONArray requestBodyTypes = endpoint.getJSONArray("requestBodyType");
+                    JSONArray bodyFields = endpoint.getJSONArray("bodyFields");
+
+                    if (requestBodyNames.length() > 0) {
+                        JSONObject properties = new JSONObject();
+                        for (int k = 0; k < requestBodyNames.length(); k++) {
+                            JSONArray names = requestBodyNames.getJSONArray(k);
+                            JSONArray types = requestBodyTypes.getJSONArray(k);
+                            JSONArray fields = bodyFields.getJSONArray(k);
+                            for (int l = 0; l < names.length(); l++) {
+                                properties.put(names.getString(l), new JSONObject().put("type", types.getString(l)));
+                            }
+                        }
+                        schema.put("type", "object");
+                        schema.put("properties", properties);
+                    }
+
+                    content.put("application/json", new JSONObject().put("schema", schema));
+                    requestBody.put("content", content);
+                    operation.put("requestBody", requestBody);
+                }
+
+                // Responses
+                JSONObject responses = new JSONObject();
+                JSONArray responseList = endpoint.getJSONArray("response");
+                for (int k = 0; k < responseList.length(); k++) {
+                    JSONArray subResponseList = responseList.getJSONArray(k);
+                    for (int l = 0; l < subResponseList.length(); l++) {
+                        JSONObject response = subResponseList.getJSONObject(l);
+                        JSONObject responseObject = new JSONObject();
+                        responseObject.put("description", response.getString("Description"));
+                        responses.put(response.getString("ResponseCode"), responseObject);
+                    }
+                }
+                operation.put("responses", responses);
+
+                pathItem.put(method, operation);
+            }
+
+            paths.put(url, pathItem);
+        }
+
+        openApi.put("paths", paths);
+
+        return openApi;
+    }
     public static void main(String[] args) {
         ServletScanner scanner = new ServletScanner();
         System.out.println(scanner.scanServlets());
